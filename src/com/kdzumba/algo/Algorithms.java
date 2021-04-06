@@ -1,17 +1,20 @@
 package com.kdzumba.algo;
 
+import com.kdzumba.algo.models.Graph;
+import com.kdzumba.algo.models.NodeModel;
+
 import java.util.*;
 
 public class Algorithms {
 
-    public Stack<Node> breadthFirstSearch(final Node src, final Node dest, Graph graph){
-        Queue<Node> frontier = new LinkedList<>();
+    public Stack<NodeModel> breadthFirstSearch(final NodeModel src, final NodeModel dest, Graph graph){
+        Queue<NodeModel> frontier = new LinkedList<>();
         frontier.add(src);
-        Stack<Node> visited = new Stack<>();
+        Stack<NodeModel> visited = new Stack<>();
         visited.add(src);
 
         while(!frontier.isEmpty()){
-            Node current = frontier.remove();
+            NodeModel current = frontier.remove();
             current.getNeighbours().forEach(next -> {
                 if(!next.isObstruction() && !visited.contains(next)){
                     next.setIsVisited(true);
@@ -24,9 +27,9 @@ public class Algorithms {
         return visited;
     }
 
-    public Stack<Node> shortestPath(final Node dest, Stack<Node> visited){
-        Stack<Node> path = new Stack<Node>();
-        Node current = dest;
+    public Stack<NodeModel> shortestPath(final NodeModel dest){
+        Stack<NodeModel> path = new Stack<>();
+        NodeModel current = dest;
         while(current.getParent() != null){
             current.setOnShortestPath(true);
             path.add(current);

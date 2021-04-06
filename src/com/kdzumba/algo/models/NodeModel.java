@@ -1,40 +1,40 @@
-package com.kdzumba.algo;
+package com.kdzumba.algo.models;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.lang.Math;
 
-public class Node {
+public class NodeModel {
 
-    final static int SIZE = 25;
+    public final static int SIZE = 25; //Width and height (Nodes are square blocks)
     private boolean isDestination = false;
     private boolean isStart = false;
     private boolean isObstruction = false;
     private boolean isVisited = false;
     private boolean onShortestPath = false;
-    private Node parent = null;
-    private NodePosition position;
-    private final Set<Node> neighbours = new HashSet<>();
+    private NodeModel parent;
+    private Position position;
+    private final Set<NodeModel> neighbours = new HashSet<>();
 
-    Node(int xPos, int yPos){
-        this.position = new NodePosition(xPos, yPos);
+    NodeModel(int xPos, int yPos){
+        this.position = new Position(xPos, yPos);
     }
 
-    Node(int xPos, int yPos, boolean isDestination, boolean isStart){
+    NodeModel(int xPos, int yPos, boolean isDestination, boolean isStart){
         this(xPos, yPos);
         this.isDestination = isDestination;
         this.isStart = isStart;
     }
 
-    public NodePosition position(){
+    public Position position(){
         return this.position;
     }
 
-    public void setPosition(NodePosition position){
+    public void setPosition(Position position){
         this.position = position;
     }
 
-    public Node getParent(){
+    public NodeModel getParent(){
         return this.parent;
     }
 
@@ -46,7 +46,7 @@ public class Node {
         return this.onShortestPath;
     }
 
-    public void setParent(Node parent){
+    public void setParent(NodeModel parent){
         this.parent = parent;
     }
 
@@ -82,21 +82,21 @@ public class Node {
         return this.isStart;
     }
 
-    public void addNeighbour(final Node node){
+    public void addNeighbour(final NodeModel node){
         this.neighbours.add(node);
     }
 
-    public Set<Node> getNeighbours() {
+    public Set<NodeModel> getNeighbours() {
         return neighbours;
     }
 
     //Computes the distance between this node and other
-    public double distanceTo(final Node other){
-        return Math.sqrt(Math.pow(this.position.x - other.position.x, 2)  + (Math.pow(this.position.y - other.position.y, 2)));
+    public double distanceTo(final NodeModel other){
+        return Math.sqrt(Math.pow(this.position.getX() - other.position.getX(), 2)  + (Math.pow(this.position.getY() - other.position.getY(), 2)));
     }
 
     public boolean containsPoint(int x, int y){
-        return this.position.x < x && this.position.y < y && this.position.x + SIZE > x && this.position.y + SIZE > y;
+        return this.position.getX() < x && this.position.getY() < y && this.position.getX() + SIZE > x && this.position.getY() + SIZE > y;
     }
 
     @Override
@@ -110,40 +110,7 @@ public class Node {
             return false;
         }
 
-        Node node = (Node) o;
+        NodeModel node = (NodeModel) o;
         return this.position.equals(node.position);
-    }
-
-    public static class NodePosition {
-        private final int x;
-        private final int y;
-
-        NodePosition(int xPos, int yPos){
-            this.x = xPos;
-            this.y = yPos;
-        }
-
-        public int getX(){
-            return this.x;
-        }
-
-        public int getY(){
-            return this.y;
-        }
-
-        @Override
-        public boolean equals(Object o){
-            //Two positions are equal if they have the same x and y values
-            if(o == null){
-                return false;
-            }
-
-            if(o.getClass() != this.getClass()){
-                return false;
-            }
-
-            NodePosition p = (NodePosition) o;
-            return p.x == this.x && p.y == this.y;
-        }
     }
 }

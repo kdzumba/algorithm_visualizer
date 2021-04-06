@@ -1,22 +1,22 @@
-package com.kdzumba.algo;
+package com.kdzumba.algo.models;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 public class Graph {
-    private final Set<Node> nodeSet = new HashSet<>();
+    private final Set<NodeModel> nodeSet = new HashSet<>();
     private final Set<Edge> edgeSet = new HashSet<>();
     private int size;
-    private Node startNode;
-    private Node destinationNode;
+    private NodeModel startNode;
+    private NodeModel destinationNode;
 
     public Graph(){
         startNode = null;
         destinationNode = null;
     }
 
-    public Graph(final Node startNode, final Node destinationNode){
+    public Graph(final NodeModel startNode, final NodeModel destinationNode){
         this.startNode = startNode;
         this.startNode.setIsStart(true);
         this.destinationNode = destinationNode;
@@ -34,7 +34,7 @@ public class Graph {
     public void createGridGraph(int xDimension, int yDimension){
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
-                Node node = new Node(i * Node.SIZE, j * Node.SIZE);
+                NodeModel node = new NodeModel(i * NodeModel.SIZE, j * NodeModel.SIZE);
                 //Make the node at (0,0) to be the start node and node at bottom
                 //right corner to be destination node (if start and dest node aren't set
                 if(this.startNode == null && i == 0 && j == 0){
@@ -51,8 +51,8 @@ public class Graph {
         //Hypotenuse of a (50, 50, sqrt(50^2 + 50^2)) resulting from fixed size node
         //double maxDistance = Node.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
         nodeSet.forEach(node -> {
-            for(Node other : nodeSet){
-                if(!node.equals(other) && node.distanceTo(other) <= Node.SIZE){
+            for(NodeModel other : nodeSet){
+                if(!node.equals(other) && node.distanceTo(other) <= NodeModel.SIZE){
                     node.addNeighbour(other);
                     this.createEdge(node, other);
                 }
@@ -72,9 +72,9 @@ public class Graph {
         for(int i = 0; i < obstructionsCount; i++){
             int randomX = random.nextInt(xDimension);
             int randomY = random.nextInt(yDimension);
-            Node.NodePosition position = new Node.NodePosition(randomX * Node.SIZE, randomY * Node.SIZE);
+            Position position = new Position(randomX * NodeModel.SIZE, randomY * NodeModel.SIZE);
 
-            for (Node node : this.nodeSet) {
+            for (NodeModel node : this.nodeSet) {
                 //Make sure that start and end node don't become obstruction nodes
                 if(!node.equals(startNode) && !node.equals(destinationNode) && node.position().equals(position)){
                     node.setObstruction(true);
@@ -84,16 +84,16 @@ public class Graph {
     }
 
     public void clearShortestPath(){
-        for(Node node : this.nodeSet){
+        for(NodeModel node : this.nodeSet){
             node.setOnShortestPath(false);
         }
     }
 
-    public Node getStartNode(){
+    public NodeModel getStartNode(){
         return this.startNode;
     }
 
-    public Node getDestinationNode(){
+    public NodeModel getDestinationNode(){
         return this.destinationNode;
     }
 
@@ -102,7 +102,7 @@ public class Graph {
      * set to avoid modifications of the set through the view
      * @return Copy of the graph's node set
      */
-    public Set<Node> getNodeSet(){
+    public Set<NodeModel> getNodeSet(){
         return Set.copyOf(this.nodeSet);
     }
 
@@ -116,7 +116,7 @@ public class Graph {
      * @param dest Destination node
      * @param weight Cost of moving from source to destination (and vice versa)
      */
-    public void createEdge(final Node src, final Node dest, double weight){
+    public void createEdge(final NodeModel src, final NodeModel dest, double weight){
         //edge set should only contain nodes that are in the nodes set
         if(!this.nodeSet.contains(src) || !this.nodeSet.contains(dest)){
             System.out.println("Source and destination should be in the graph");
@@ -133,7 +133,7 @@ public class Graph {
      * @param src source node
      * @param dest destination node
      */
-    public void createEdge(final Node src, final Node dest){
+    public void createEdge(final NodeModel src, final NodeModel dest){
         double weight = src.distanceTo(dest);
         this.createEdge(src, dest, weight);
     }
@@ -142,12 +142,12 @@ public class Graph {
         this.edgeSet.remove(edge);
     }
 
-    public void addNode(final Node node){
+    public void addNode(final NodeModel node){
         this.nodeSet.add(node);
         this.size ++;
     }
 
-    public void removeNode(final Node node){
+    public void removeNode(final NodeModel node){
         //First remove all edges that are comprised of the node to be removed
        try{
            edgeSet.forEach(edge -> {
@@ -166,11 +166,11 @@ public class Graph {
     }
 
     public static class Edge{
-        Node source;
-        Node destination;
+        NodeModel source;
+        NodeModel destination;
         double weight;
 
-        Edge(Node fromNode, Node toNode, double weight){
+        Edge(NodeModel fromNode, NodeModel toNode, double weight){
             this.source = fromNode;
             this.destination = toNode;
             this.weight = weight;
