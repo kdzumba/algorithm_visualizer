@@ -3,6 +3,7 @@ package com.kdzumba.algo.views;
 import com.kdzumba.algo.Algorithms;
 import com.kdzumba.algo.models.Graph;
 import com.kdzumba.algo.models.NodeModel;
+import org.w3c.dom.Node;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,8 @@ import java.awt.event.MouseMotionListener;
 public class Board extends JPanel {
     private final int xDimension;
     private final int yDimension;
-    Graph graph = new Graph();
+    private final int NODEMARGIN = 2;
+    private final Graph graph = new Graph();
     Algorithms algorithms = new Algorithms();
 
     /**
@@ -23,23 +25,29 @@ public class Board extends JPanel {
     Board(int xDimension, int yDimension){
         this.xDimension = xDimension;
         this.yDimension = yDimension;
-        graph.createGridGraphWithObstacles(xDimension, yDimension);
+        this.setBackground(Color.darkGray);
+        graph.createGridGraph(xDimension, yDimension);
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();
         this.addMouseMotionListener(mouseMotionHandler);
         MouseClickHandler mouseClickHandler = new MouseClickHandler();
         this.addMouseListener(mouseClickHandler);
+
+        this.setLayout(new GridLayout(xDimension, yDimension, NODEMARGIN, NODEMARGIN));
+        for(NodeModel nodeModel : graph.getNodeSet()){
+            this.add(new NodeView(nodeModel));
+        }
+
+        this.validate();
+        //Update board to display start and end node
+        this.updateBoard();
     }
 
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.setColor(Color.darkGray);
-
-        g.fillRect(0, 0, NodeModel.SIZE * xDimension, NodeModel.SIZE * yDimension);
-
-        for(NodeModel node : graph.getNodeSet()){
-            NodeView nodeView = new NodeView(node);
-            nodeView.paintComponent(g);
+    //Render each node with the latest correct color for its state
+    public void updateBoard(){
+        for(Component node : this.getComponents()){
+            if(node instanceof NodeView){
+                ((NodeView) node).updateColor();
+            }
         }
     }
 
@@ -52,12 +60,12 @@ public class Board extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             //TODO Unmark node that's already an obstruction
-            for(NodeModel node : graph.getNodeSet()){
-                if(node.containsPoint(e.getX(), e.getY())){
-                    node.setObstruction(true);
+            for(NodeModel nodeModel : graph.getNodeSet()){
+                if(nodeModel.containsPoint(e.getX(), e.getY())){
+                    nodeModel.setObstruction(!nodeModel.isObstruction());
                 }
             }
-            repaint();
+            updateBoard();
         }
 
         @Override
@@ -70,12 +78,12 @@ public class Board extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            for(NodeModel node : graph.getNodeSet()){
-                if(node.containsPoint(e.getX(), e.getY())){
-                    node.setObstruction(!node.isObstruction());
+            for(NodeModel nodeModel : graph.getNodeSet()){
+                if(nodeModel.containsPoint(e.getX(), e.getY())){
+                    nodeModel.setObstruction(!nodeModel.isObstruction());
                 }
             }
-            repaint();
+            updateBoard();
         }
 
         @Override
@@ -85,8 +93,7 @@ public class Board extends JPanel {
             graph.clearShortestPath();
             algorithms.breadthFirstSearch(graph.getStartNode(), graph.getDestinationNode(), graph);
             algorithms.shortestPath(graph.getDestinationNode());
-
-            repaint();
+            updateBoard();
         }
 
         @Override

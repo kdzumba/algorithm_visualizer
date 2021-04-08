@@ -16,7 +16,7 @@ public class NodeModel {
     private Position position;
     private final Set<NodeModel> neighbours = new HashSet<>();
 
-    NodeModel(int xPos, int yPos){
+    public NodeModel(int xPos, int yPos){
         this.position = new Position(xPos, yPos);
     }
 

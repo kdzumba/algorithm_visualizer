@@ -12,7 +12,6 @@ public class AlgoApplication extends JFrame {
     public AlgoApplication(int xDimension, int yDimension){
         this.setTitle("Algorithm Visualizer");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         Board board = new Board(xDimension, yDimension);
         this.add(board);
         this.pack();

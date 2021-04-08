@@ -1,12 +1,10 @@
 package com.kdzumba.algo.models;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
-    private final Set<NodeModel> nodeSet = new HashSet<>();
-    private final Set<Edge> edgeSet = new HashSet<>();
+    private final List<NodeModel> nodeSet = new ArrayList<>();
+    private final List<Edge> edgeSet = new ArrayList<>();
     private int size;
     private NodeModel startNode;
     private NodeModel destinationNode;
@@ -34,9 +32,8 @@ public class Graph {
     public void createGridGraph(int xDimension, int yDimension){
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
-                NodeModel node = new NodeModel(i * NodeModel.SIZE, j * NodeModel.SIZE);
-                //Make the node at (0,0) to be the start node and node at bottom
-                //right corner to be destination node (if start and dest node aren't set
+                NodeModel node = new NodeModel(j * NodeModel.SIZE, i * NodeModel.SIZE);
+
                 if(this.startNode == null && i == 0 && j == 0){
                     node.setIsStart(true);
                     this.startNode = node;
@@ -102,8 +99,8 @@ public class Graph {
      * set to avoid modifications of the set through the view
      * @return Copy of the graph's node set
      */
-    public Set<NodeModel> getNodeSet(){
-        return Set.copyOf(this.nodeSet);
+    public List<NodeModel> getNodeSet(){
+        return List.copyOf(this.nodeSet);
     }
 
     public int getSize(){
