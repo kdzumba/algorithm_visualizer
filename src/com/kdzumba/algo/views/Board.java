@@ -15,8 +15,6 @@ public class Board extends JPanel {
     class MouseMotionHandler implements MouseMotionListener {
         @Override
         public void mouseDragged(MouseEvent e) {
-            //TODO Handle situation where mouse is dragged on same node for long. This obstructs
-            //TODO the node and undoes the obstruction after
             for(NodeModel nodeModel : graph.getNodeList()){
                 if(nodeModel.containsPoint(e.getX(), e.getY())){
                     nodeModel.setObstruction(true);
@@ -60,7 +58,7 @@ public class Board extends JPanel {
 
     private final int xDimension;
     private final int yDimension;
-    private final int NODEMARGIN = 2;
+    private final int NODEMARGIN = 1;
     private final Graph graph = new Graph();
 
     /**
