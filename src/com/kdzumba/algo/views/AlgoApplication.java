@@ -1,6 +1,8 @@
 package com.kdzumba.algo.views;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
 public class AlgoApplication extends JFrame {
     /**
@@ -12,8 +14,12 @@ public class AlgoApplication extends JFrame {
     public AlgoApplication(int xDimension, int yDimension){
         this.setTitle("Algorithm Visualizer");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.setLayout(new BorderLayout());
         Board board = new Board(xDimension, yDimension);
-        this.add(board);
+        ControlsMenu menu = new ControlsMenu(board);
+        this.add(board, BorderLayout.PAGE_END);
+        this.add(menu, BorderLayout.PAGE_START);
         this.pack();
         this.setVisible(true);
     }

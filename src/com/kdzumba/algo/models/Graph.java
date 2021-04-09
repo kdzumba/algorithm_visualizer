@@ -3,7 +3,9 @@ package com.kdzumba.algo.models;
 import java.util.*;
 
 public class Graph {
-    private final List<NodeModel> nodeSet = new ArrayList<>();
+    //Using List for nodes and edges because a List maintains insert order, and this
+    //is useful for mapping between NodeModels and NodeViews
+    private final List<NodeModel> nodeList = new ArrayList<>();
     private final List<Edge> edgeSet = new ArrayList<>();
     private int size;
     private NodeModel startNode;
@@ -33,7 +35,6 @@ public class Graph {
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
                 NodeModel node = new NodeModel(j * NodeModel.SIZE, i * NodeModel.SIZE);
-
                 if(this.startNode == null && i == 0 && j == 0){
                     node.setIsStart(true);
                     this.startNode = node;
@@ -45,10 +46,10 @@ public class Graph {
                 this.addNode(node);
             }
         }
-        //Hypotenuse of a (50, 50, sqrt(50^2 + 50^2)) resulting from fixed size node
+        //Hypotenuse of a (SIZE, SIZE, sqrt(SIZE^2 + SIZE^2)) resulting from fixed size node
         //double maxDistance = Node.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
-        nodeSet.forEach(node -> {
-            for(NodeModel other : nodeSet){
+        nodeList.forEach(node -> {
+            for(NodeModel other : nodeList){
                 if(!node.equals(other) && node.distanceTo(other) <= NodeModel.SIZE){
                     node.addNeighbour(other);
                     this.createEdge(node, other);
@@ -64,14 +65,14 @@ public class Graph {
 
     public void generateObstructions(int xDimension, int yDimension){
         Random random = new Random();
-        int obstructionsCount = 150;
+        int obstructionsCount = 270;
 
         for(int i = 0; i < obstructionsCount; i++){
             int randomX = random.nextInt(xDimension);
             int randomY = random.nextInt(yDimension);
             Position position = new Position(randomX * NodeModel.SIZE, randomY * NodeModel.SIZE);
 
-            for (NodeModel node : this.nodeSet) {
+            for (NodeModel node : this.nodeList) {
                 //Make sure that start and end node don't become obstruction nodes
                 if(!node.equals(startNode) && !node.equals(destinationNode) && node.position().equals(position)){
                     node.setObstruction(true);
@@ -81,7 +82,7 @@ public class Graph {
     }
 
     public void clearShortestPath(){
-        for(NodeModel node : this.nodeSet){
+        for(NodeModel node : this.nodeList){
             node.setOnShortestPath(false);
         }
     }
@@ -99,8 +100,8 @@ public class Graph {
      * set to avoid modifications of the set through the view
      * @return Copy of the graph's node set
      */
-    public List<NodeModel> getNodeSet(){
-        return List.copyOf(this.nodeSet);
+    public List<NodeModel> getNodeList(){
+        return this.nodeList;
     }
 
     public int getSize(){
@@ -115,7 +116,7 @@ public class Graph {
      */
     public void createEdge(final NodeModel src, final NodeModel dest, double weight){
         //edge set should only contain nodes that are in the nodes set
-        if(!this.nodeSet.contains(src) || !this.nodeSet.contains(dest)){
+        if(!this.nodeList.contains(src) || !this.nodeList.contains(dest)){
             System.out.println("Source and destination should be in the graph");
         }else{
             Edge edge = new Edge(src, dest, weight);
@@ -140,7 +141,7 @@ public class Graph {
     }
 
     public void addNode(final NodeModel node){
-        this.nodeSet.add(node);
+        this.nodeList.add(node);
         this.size ++;
     }
 
@@ -157,9 +158,8 @@ public class Graph {
            System.out.println("Could not remove edge as exception was thrown");
            System.out.println(e.getMessage());
         }
-
        //Then remove the node
-       this.nodeSet.remove(node);
+       this.nodeList.remove(node);
     }
 
     public static class Edge{

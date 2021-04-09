@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class AlgoButton extends JButton {
     private final String text;
-    private final int width = 250;
-    private final int height = 60;
+    private final int width = 200;
+    private final int height = 40;
 
     AlgoButton(String text){
         super(text);

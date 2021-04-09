@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Algorithms {
 
-    public Stack<NodeModel> breadthFirstSearch(final NodeModel src, final NodeModel dest, Graph graph){
+    public static Stack<NodeModel> breadthFirstSearch(final NodeModel src, final NodeModel dest, Graph graph){
         Queue<NodeModel> frontier = new LinkedList<>();
         frontier.add(src);
         Stack<NodeModel> visited = new Stack<>();
@@ -27,7 +27,7 @@ public class Algorithms {
         return visited;
     }
 
-    public Stack<NodeModel> shortestPath(final NodeModel dest){
+    public static Stack<NodeModel> shortestPath(final NodeModel dest){
         Stack<NodeModel> path = new Stack<>();
         NodeModel current = dest;
         while(current.getParent() != null){

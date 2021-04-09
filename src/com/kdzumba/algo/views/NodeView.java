@@ -6,14 +6,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class NodeView extends JPanel{
-    public final NodeModel nodeModel;
+    private final NodeModel nodeModel;
 
     private enum NodeColor {
         OBSTRUCTION(new Color(139, 69, 19)),
         START(new Color(0, 191, 255)),
         DESTINATION(new Color(34, 139, 34)),
         SHORTESTPATH(new Color(222, 184, 135)),
-        DEFAULT(Color.gray)
+        DEFAULT(new Color(150, 150, 150))
         ;
         private final Color color;
         NodeColor(Color color) {
@@ -43,6 +43,9 @@ public class NodeView extends JPanel{
         }
         else if(this.nodeModel.onShortestPath()){
             this.setBackground(NodeColor.SHORTESTPATH.color);
+        }
+        else{
+            this.setBackground(NodeColor.DEFAULT.color);
         }
     }
 }
