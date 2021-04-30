@@ -1,10 +1,10 @@
 package com.kdzumba.algo.models;
 
-public class Position {
+public class AlgoPositionModel {
     private final int x;
     private final int y;
 
-    Position(int xPos, int yPos){
+    public AlgoPositionModel(int xPos, int yPos){
         this.x = xPos;
         this.y = yPos;
     }
@@ -28,7 +28,7 @@ public class Position {
             return false;
         }
 
-        Position p = (Position) o;
+        AlgoPositionModel p = (AlgoPositionModel) o;
         return p.x == this.x && p.y == this.y;
     }
 }

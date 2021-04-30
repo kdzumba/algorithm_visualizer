@@ -1,7 +1,6 @@
 package com.kdzumba.algo.views;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class AlgoApplication extends JFrame {
@@ -16,9 +15,9 @@ public class AlgoApplication extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
-        Board board = new Board(xDimension, yDimension);
-        ControlsMenu menu = new ControlsMenu(board);
-        this.add(board, BorderLayout.PAGE_END);
+        AlgoBoard algoBoard = new AlgoBoard(xDimension, yDimension);
+        AlgoControlsMenu menu = new AlgoControlsMenu(algoBoard);
+        this.add(algoBoard, BorderLayout.PAGE_END);
         this.add(menu, BorderLayout.PAGE_START);
         this.pack();
         this.setVisible(true);

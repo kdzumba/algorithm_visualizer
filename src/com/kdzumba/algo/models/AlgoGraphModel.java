@@ -2,21 +2,21 @@ package com.kdzumba.algo.models;
 
 import java.util.*;
 
-public class Graph {
+public class AlgoGraphModel {
     //Using List for nodes and edges because a List maintains insert order, and this
     //is useful for mapping between NodeModels and NodeViews
-    private final List<NodeModel> nodeList = new ArrayList<>();
+    private final List<AlgoNodeModel> nodeList = new ArrayList<>();
     private final List<Edge> edgeSet = new ArrayList<>();
     private int size;
-    private NodeModel startNode;
-    private NodeModel destinationNode;
+    private AlgoNodeModel startNode;
+    private AlgoNodeModel destinationNode;
 
-    public Graph(){
+    public AlgoGraphModel(){
         startNode = null;
         destinationNode = null;
     }
 
-    public Graph(final NodeModel startNode, final NodeModel destinationNode){
+    public AlgoGraphModel(final AlgoNodeModel startNode, final AlgoNodeModel destinationNode){
         this.startNode = startNode;
         this.startNode.setIsStart(true);
         this.destinationNode = destinationNode;
@@ -26,20 +26,34 @@ public class Graph {
     }
 
     /**
-     * This is convenience method for creating a graph that is in the form
-     * of a grid. The resulting graph is undirected, so u->v == v->u
+     * This is convenience method for creating a graph that is in the for of a grid.
+     * The resulting graph is undirected, so u->v == v->u
      * @param xDimension Number of nodes per row
      * @param yDimension Number of nodes per col
+     * @param src The source node position (should be within the dimensions of the board
+     * @param dest The destination node position (should be within the dimensions of the board)
      */
-    public void createGridGraph(int xDimension, int yDimension){
+    public void createGridGraph(int xDimension, int yDimension, AlgoPositionModel src, AlgoPositionModel dest){
+
+        //TODO: Find a better way of checking src and dest compliance maybe?? This looks messy
+        if(src.getX() < 0 || src.getX() > xDimension || src.getY() < 0 || src.getY() > yDimension){
+            System.out.println("source node position must be within the dimensions of the board");
+            return;
+        }
+        
+        if(dest.getX() < 0 || dest.getX() > xDimension || dest.getY() < 0 || dest.getY() > yDimension){
+            System.out.println("Destination node position must be within the dimensions of the board");
+            return;
+        }
+
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
-                NodeModel node = new NodeModel(j * NodeModel.SIZE, i * NodeModel.SIZE);
-                if(this.startNode == null && i == 0 && j == 0){
+                AlgoNodeModel node = new AlgoNodeModel(j * AlgoNodeModel.SIZE, i * AlgoNodeModel.SIZE);
+                if(this.startNode == null && i == src.getX() && j == src.getY()){
                     node.setIsStart(true);
                     this.startNode = node;
                 }
-                if(this.destinationNode == null && i == xDimension - 1 && j == yDimension - 1){
+                if(this.destinationNode == null && i == dest.getX() && j == dest.getY()){
                     node.setIsDestination(true);
                     this.destinationNode = node;
                 }
@@ -49,8 +63,8 @@ public class Graph {
         //Hypotenuse of a (SIZE, SIZE, sqrt(SIZE^2 + SIZE^2)) resulting from fixed size node
         //double maxDistance = Node.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
         nodeList.forEach(node -> {
-            for(NodeModel other : nodeList){
-                if(!node.equals(other) && node.distanceTo(other) <= NodeModel.SIZE){
+            for(AlgoNodeModel other : nodeList){
+                if(!node.equals(other) && node.distanceTo(other) <= AlgoNodeModel.SIZE){
                     node.addNeighbour(other);
                     this.createEdge(node, other);
                 }
@@ -58,8 +72,8 @@ public class Graph {
         });
     }
 
-    public void createGridGraphWithObstacles(int xDimension, int yDimension){
-        this.createGridGraph(xDimension, yDimension);
+    public void createGridGraphWithObstacles(int xDimension, int yDimension, AlgoPositionModel srcPos, AlgoPositionModel destPos){
+        this.createGridGraph(xDimension, yDimension, srcPos, destPos);
         this.generateObstructions(xDimension, yDimension);
     }
 
@@ -70,11 +84,11 @@ public class Graph {
         for(int i = 0; i < obstructionsCount; i++){
             int randomX = random.nextInt(xDimension);
             int randomY = random.nextInt(yDimension);
-            Position position = new Position(randomX * NodeModel.SIZE, randomY * NodeModel.SIZE);
+            AlgoPositionModel algoPositionModel = new AlgoPositionModel(randomX * AlgoNodeModel.SIZE, randomY * AlgoNodeModel.SIZE);
 
-            for (NodeModel node : this.nodeList) {
+            for (AlgoNodeModel node : this.nodeList) {
                 //Make sure that start and end node don't become obstruction nodes
-                if(!node.equals(startNode) && !node.equals(destinationNode) && node.position().equals(position)){
+                if(!node.equals(startNode) && !node.equals(destinationNode) && node.position().equals(algoPositionModel)){
                     node.setObstruction(true);
                 }
             }
@@ -82,16 +96,16 @@ public class Graph {
     }
 
     public void clearShortestPath(){
-        for(NodeModel node : this.nodeList){
+        for(AlgoNodeModel node : this.nodeList){
             node.setOnShortestPath(false);
         }
     }
 
-    public NodeModel getStartNode(){
+    public AlgoNodeModel getStartNode(){
         return this.startNode;
     }
 
-    public NodeModel getDestinationNode(){
+    public AlgoNodeModel getDestinationNode(){
         return this.destinationNode;
     }
 
@@ -100,7 +114,7 @@ public class Graph {
      * set to avoid modifications of the set through the view
      * @return Copy of the graph's node set
      */
-    public List<NodeModel> getNodeList(){
+    public List<AlgoNodeModel> getNodeList(){
         return this.nodeList;
     }
 
@@ -114,7 +128,7 @@ public class Graph {
      * @param dest Destination node
      * @param weight Cost of moving from source to destination (and vice versa)
      */
-    public void createEdge(final NodeModel src, final NodeModel dest, double weight){
+    public void createEdge(final AlgoNodeModel src, final AlgoNodeModel dest, double weight){
         //edge set should only contain nodes that are in the nodes set
         if(!this.nodeList.contains(src) || !this.nodeList.contains(dest)){
             System.out.println("Source and destination should be in the graph");
@@ -131,7 +145,7 @@ public class Graph {
      * @param src source node
      * @param dest destination node
      */
-    public void createEdge(final NodeModel src, final NodeModel dest){
+    public void createEdge(final AlgoNodeModel src, final AlgoNodeModel dest){
         double weight = src.distanceTo(dest);
         this.createEdge(src, dest, weight);
     }
@@ -140,12 +154,12 @@ public class Graph {
         this.edgeSet.remove(edge);
     }
 
-    public void addNode(final NodeModel node){
+    public void addNode(final AlgoNodeModel node){
         this.nodeList.add(node);
         this.size ++;
     }
 
-    public void removeNode(final NodeModel node){
+    public void removeNode(final AlgoNodeModel node){
         //First remove all edges that are comprised of the node to be removed
        try{
            edgeSet.forEach(edge -> {
@@ -163,11 +177,11 @@ public class Graph {
     }
 
     public static class Edge{
-        NodeModel source;
-        NodeModel destination;
+        AlgoNodeModel source;
+        AlgoNodeModel destination;
         double weight;
 
-        Edge(NodeModel fromNode, NodeModel toNode, double weight){
+        Edge(AlgoNodeModel fromNode, AlgoNodeModel toNode, double weight){
             this.source = fromNode;
             this.destination = toNode;
             this.weight = weight;
