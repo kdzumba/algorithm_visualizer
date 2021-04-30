@@ -7,4 +7,4 @@ This is a desktop application for visualizing different path finding and search 
 2. http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
 
 ## Project Demos (Updated as project progresses)
-![Demo](https://github.com/kdzumba/algorithm_visualizer/blob/main/algo_demo_1.PNG)
+![Demo Image 1](https://github.com/kdzumba/algorithm_visualizer/blob/main/images/algo_demo_1.PNG)
