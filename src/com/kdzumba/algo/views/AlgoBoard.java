@@ -8,23 +8,26 @@ import com.kdzumba.algo.models.AlgoPositionModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Random;
 import java.util.Stack;
 
+/**
+ * The AlgoBoard class models a visualization of a 2 dimensional graph
+ */
 public class AlgoBoard extends JPanel {
 
     private final int xDimension;
     private final int yDimension;
-    private final int NODEMARGIN = 1;
+    private final int NODEMARGIN = 0;
     private final AlgoGraphModel algoGraphModel = new AlgoGraphModel();
+    private AlgoPositionModel focusedLocation;
 
     class MouseMotionHandler implements MouseMotionListener {
         @Override
         public void mouseDragged(MouseEvent e) {
             for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
-                if(algoNodeModel.containsPoint(e.getX(), e.getY())){
+                if(algoNodeModel.containsPoint(e.getX() + focusedLocation.getX(), e.getY() + focusedLocation.getY())){
                     algoNodeModel.setObstruction(true);
                 }
             }
@@ -33,35 +36,7 @@ public class AlgoBoard extends JPanel {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-        }
-    }
-
-    class MouseClickHandler implements MouseListener {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
-                //Invert the obstruction state of a node model when it's clicked on
-                if(algoNodeModel.containsPoint(e.getX(), e.getY())) {
-                    algoNodeModel.setObstruction(!algoNodeModel.isObstruction());
-                }
-            }
-            updateBoard();
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
+            System.out.println("Mouse Moved");
         }
     }
 
@@ -82,8 +57,6 @@ public class AlgoBoard extends JPanel {
 
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();
         this.addMouseMotionListener(mouseMotionHandler);
-        MouseClickHandler mouseClickHandler = new MouseClickHandler();
-        this.addMouseListener(mouseClickHandler);
         this.setLayout(new GridLayout(xDimension, yDimension, NODEMARGIN, NODEMARGIN));
 
         //Create a node view for each node model in the graph's node list
@@ -95,6 +68,10 @@ public class AlgoBoard extends JPanel {
         this.validate();
         //Update board to display start and end node
         this.updateBoard();
+    }
+
+    public void setFocusedLocation(int x, int y){
+        this.focusedLocation = new AlgoPositionModel(x, y);
     }
 
     public AlgoGraphModel getGraph(){
