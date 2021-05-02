@@ -16,6 +16,11 @@ public class AlgoGraphModel {
         destinationNode = null;
     }
 
+    /**
+     * Creates a graph with two nodes, a given start node and a given destination node
+     * @param startNode Start node for the graph to be created
+     * @param destinationNode Destination node for the graph to be created
+     */
     public AlgoGraphModel(final AlgoNodeModel startNode, final AlgoNodeModel destinationNode){
         this.startNode = startNode;
         this.startNode.setIsStart(true);
@@ -72,14 +77,26 @@ public class AlgoGraphModel {
         });
     }
 
+    /**
+     * Creates a grid graph with random nodes set as obstruction nodes
+     * @param xDimension Number of nodes per row
+     * @param yDimension Number of nodes per column
+     * @param srcPos Position of the source node for the graph
+     * @param destPos Position of the destination node for the graph
+     */
     public void createGridGraphWithObstacles(int xDimension, int yDimension, AlgoPositionModel srcPos, AlgoPositionModel destPos){
         this.createGridGraph(xDimension, yDimension, srcPos, destPos);
         this.generateObstructions(xDimension, yDimension);
     }
 
+    /**
+     * Sets random nodes as obstruction nodes for the graph
+     * @param xDimension Number of nodes per row
+     * @param yDimension Number of nodes per column
+     */
     public void generateObstructions(int xDimension, int yDimension){
         Random random = new Random();
-        int obstructionsCount = 270;
+        int obstructionsCount = 400; //TODO Get rid of this magic number
 
         for(int i = 0; i < obstructionsCount; i++){
             int randomX = random.nextInt(xDimension);
@@ -150,17 +167,31 @@ public class AlgoGraphModel {
         this.createEdge(src, dest, weight);
     }
 
+    /**
+     * Removes an edge from this graph if it is contained in the list of edges
+     * @param edge An edge to be removed
+     */
     public void removeEdge(final Edge edge){
         this.edgeSet.remove(edge);
     }
 
+    /**
+     * Addes a node to the graph
+     * @param node Node to be added to the graph
+     */
     public void addNode(final AlgoNodeModel node){
         this.nodeList.add(node);
         this.size ++;
     }
 
+    /**
+     * Removes a given node from the graph, as well as any edges that contain
+     * this node
+     * @param node A node to be removed from the graph
+     */
     public void removeNode(final AlgoNodeModel node){
         //First remove all edges that are comprised of the node to be removed
+        //TODO Figure out if we really neet a try catch here??
        try{
            edgeSet.forEach(edge -> {
                if(edge.source.equals(node) || edge.destination.equals(node)){
