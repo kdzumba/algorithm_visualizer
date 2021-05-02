@@ -4,8 +4,13 @@ import com.kdzumba.algo.models.AlgoNodeModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class AlgoNodeView extends JPanel{
+/**
+ * The AlgoNodeView is a visual representation of an AlgoNodeModel's state
+ */
+public class AlgoNodeView extends JButton{
     private final AlgoNodeModel algoNodeModel;
 
     private enum NodeColor {
@@ -24,6 +29,30 @@ public class AlgoNodeView extends JPanel{
 
     AlgoNodeView(AlgoNodeModel algoNodeModel){
         this.algoNodeModel = algoNodeModel;
+        this.addActionListener(e -> {
+            algoNodeModel.setObstruction(!algoNodeModel.isObstruction());
+            updateColor();
+        });
+
+        this.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Component source = (Component) e.getSource();
+                AlgoBoard parent = (AlgoBoard) source.getParent();
+                //This sends the location of the node view on which the event originated
+                //and is used as an offset of the event's x-position in the parent
+                //mouse dragged handler
+                parent.setFocusedLocation((int)getLocation().getX(), (int)getLocation().getY());
+                //Mouse dragged events handled by the parent of the node view(to allow for dragging
+                //over multiple nodes)
+                parent.dispatchEvent(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+
+            }
+        });
         this.setBackground(NodeColor.DEFAULT.color);
     }
 
