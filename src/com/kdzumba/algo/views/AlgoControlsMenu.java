@@ -8,6 +8,8 @@ import java.awt.*;
 
 public class AlgoControlsMenu extends JPanel {
 
+    //TODO Find a way of controlling node change animations from here
+    
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
         AlgoButton clearBoardButton = new AlgoButton("Clear Board");
