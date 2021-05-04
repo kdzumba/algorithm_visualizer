@@ -5,11 +5,11 @@ import com.kdzumba.algo.models.AlgoNodeModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Stack;
 
 public class AlgoControlsMenu extends JPanel {
+    private int animationDuration = 300; //in milliseconds
 
-    //TODO Find a way of controlling node change animations from here
-    
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
         AlgoButton clearBoardButton = new AlgoButton("Clear Board");
@@ -18,26 +18,39 @@ public class AlgoControlsMenu extends JPanel {
                 algoNodeModel.setObstruction(false);
                 algoNodeModel.setOnShortestPath(false);
                 algoNodeModel.setIsVisited(false);
+                algoNodeModel.updateObservers();
             }
-            algoBoard.updateBoard();
         });
 
         AlgoButton clearPathButton = new AlgoButton("Clear Path");
-        clearPathButton.addActionListener(e -> {
-            algoBoard.getGraph().clearShortestPath();
-            algoBoard.updateBoard();
-        });
+        clearPathButton.addActionListener(e -> algoBoard.getGraph().clearShortestPath());
 
         AlgoButton visualizeButton = new AlgoButton("Visualize");
         visualizeButton.addActionListener(e -> {
             algoBoard.getGraph().clearShortestPath();
             Algorithms.breadthFirstSearch(algoBoard.getGraph().getStartNode(), algoBoard.getGraph().getDestinationNode(), algoBoard.getGraph());
-            Algorithms.shortestPath(algoBoard.getGraph().getDestinationNode());
-            algoBoard.updateBoard();
+            animateShortestPath(Algorithms.shortestPath(algoBoard.getGraph().getDestinationNode()));
         });
 
         this.add(visualizeButton);
         this.add(clearBoardButton);
         this.add(clearPathButton);
+    }
+
+    private void animateShortestPath(Stack<AlgoNodeModel> pathNodes){
+        Thread thread = new Thread(() -> {
+            while (!pathNodes.isEmpty()) {
+                AlgoNodeModel current = pathNodes.pop();
+                current.updateObservers();
+                try {
+                    //TODO: make duration of sleep a controlled variable that the user can change
+                    Thread.sleep(animationDuration);
+                }
+                catch(InterruptedException exception){
+
+                }
+            }
+        });
+        thread.start();
     }
 }

@@ -1,6 +1,6 @@
 package com.kdzumba.algo.views;
 
-import com.kdzumba.algo.Algorithms;
+import com.kdzumba.algo.interfaces.AlgoObserver;
 import com.kdzumba.algo.models.AlgoGraphModel;
 import com.kdzumba.algo.models.AlgoNodeModel;
 import com.kdzumba.algo.models.AlgoPositionModel;
@@ -8,7 +8,7 @@ import com.kdzumba.algo.models.AlgoPositionModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Random;
 import java.util.Stack;
 
@@ -23,7 +23,7 @@ public class AlgoBoard extends JPanel {
     private final AlgoGraphModel algoGraphModel = new AlgoGraphModel();
     private AlgoPositionModel focusedLocation;
 
-    class MouseMotionHandler implements MouseMotionListener {
+    class MouseMotionHandler extends MouseMotionAdapter {
         @Override
         public void mouseDragged(MouseEvent e) {
             for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
@@ -31,12 +31,6 @@ public class AlgoBoard extends JPanel {
                     algoNodeModel.setObstruction(true);
                 }
             }
-            updateBoard();
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            System.out.println("Mouse Moved");
         }
     }
 
@@ -61,7 +55,10 @@ public class AlgoBoard extends JPanel {
 
         //Create a node view for each node model in the graph's node list
         for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
-            this.add(new AlgoNodeView(algoNodeModel));
+            //TODO: Clean this up after testing, it's a mess
+            AlgoNodeView nodeView = new AlgoNodeView(algoNodeModel);
+            algoNodeModel.addObserver(nodeView);
+            this.add(nodeView);
         }
 
         //validate the component hierarchy to display added components
@@ -93,14 +90,5 @@ public class AlgoBoard extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(xDimension * AlgoNodeModel.SIZE, yDimension * AlgoNodeModel.SIZE);
-    }
-
-    //TODO: properly implement this functionality
-    public AlgoDialog displayDialog(JFrame frame){
-        Stack<AlgoNodeModel> shortestPath = Algorithms.shortestPath(this.algoGraphModel.getDestinationNode());
-        if(shortestPath.isEmpty()){
-            return new AlgoDialog(frame, "Destination Node cannot be reached", true);
-        }
-        else return null;
     }
 }

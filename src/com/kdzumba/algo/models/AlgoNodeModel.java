@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.lang.Math;
 
-public class AlgoNodeModel {
+public class AlgoNodeModel extends AlgoObservable{
 
     public final static int SIZE = 25; //Width and height (Nodes are square blocks)
     private boolean isDestination = false;
@@ -48,6 +48,7 @@ public class AlgoNodeModel {
      */
     public void setOnShortestPath(boolean onShortestPath){
         this.onShortestPath = onShortestPath;
+        //this.updateObservers();
     }
 
     /**
@@ -65,6 +66,7 @@ public class AlgoNodeModel {
      */
     public void setParent(AlgoNodeModel parent){
         this.parent = parent;
+        this.updateObservers();
     }
 
     /**
@@ -89,6 +91,7 @@ public class AlgoNodeModel {
      */
     public void setObstruction(boolean obstruction){
         this.isObstruction = obstruction;
+        this.updateObservers();
     }
 
     /**
@@ -105,6 +108,7 @@ public class AlgoNodeModel {
      */
     public void setIsDestination(boolean isDestination){
         this.isDestination = isDestination;
+        this.updateObservers();
     }
 
     /**
@@ -121,6 +125,7 @@ public class AlgoNodeModel {
      */
     public void setIsStart(boolean isStart){
         this.isStart = isStart;
+        this.updateObservers();
     }
 
     /**
