@@ -15,10 +15,10 @@ public class Algorithms {
      * @param algoGraphModel Graph on which the search is made
      * @return A stack of nodes that were visited on the search for the shortest path
      */
-    public static Stack<AlgoNodeModel> breadthFirstSearch(final AlgoNodeModel src, final AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
+    public static Queue<AlgoNodeModel> breadthFirstSearch(final AlgoNodeModel src, final AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
         Queue<AlgoNodeModel> frontier = new LinkedList<>();
         frontier.add(src);
-        Stack<AlgoNodeModel> visited = new Stack<>();
+        Queue<AlgoNodeModel> visited = new LinkedList<>();
         visited.add(src);
 
         while(!frontier.isEmpty()){

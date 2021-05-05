@@ -62,6 +62,10 @@ public class AlgoGraphModel {
                     node.setIsDestination(true);
                     this.destinationNode = node;
                 }
+                if(i == xDimension - 1 || i == 0 || j == yDimension - 1 || j == 0){
+                    node.setBoundaryNode(true);
+                    node.setObstruction(true);
+                }
                 this.addNode(node);
             }
         }

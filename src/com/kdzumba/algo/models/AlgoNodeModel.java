@@ -1,7 +1,7 @@
 package com.kdzumba.algo.models;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.lang.Math;
 
 public class AlgoNodeModel extends AlgoObservable{
@@ -12,9 +12,10 @@ public class AlgoNodeModel extends AlgoObservable{
     private boolean isObstruction = false;
     private boolean isVisited = false;
     private boolean onShortestPath = false;
+    private boolean isBoundaryNode = false;
     private AlgoNodeModel parent;
     private AlgoPositionModel algoPositionModel;
-    private final Set<AlgoNodeModel> neighbours = new HashSet<>();
+    private final List<AlgoNodeModel> neighbours = new ArrayList<>();
 
     public AlgoNodeModel(int xPos, int yPos){
         this.algoPositionModel = new AlgoPositionModel(xPos, yPos);
@@ -28,6 +29,10 @@ public class AlgoNodeModel extends AlgoObservable{
 
     public AlgoPositionModel position(){
         return this.algoPositionModel;
+    }
+
+    public void setBoundaryNode(boolean isBoundaryNode){
+        this.isBoundaryNode = isBoundaryNode;
     }
 
     public void setPosition(AlgoPositionModel algoPositionModel){
@@ -66,7 +71,6 @@ public class AlgoNodeModel extends AlgoObservable{
      */
     public void setParent(AlgoNodeModel parent){
         this.parent = parent;
-        this.updateObservers();
     }
 
     /**
@@ -148,7 +152,7 @@ public class AlgoNodeModel extends AlgoObservable{
      * Gets the neighbouring nodes for this node
      * @return A set of nodes that are adjacent to this node
      */
-    public Set<AlgoNodeModel> getNeighbours() {
+    public List<AlgoNodeModel> getNeighbours() {
         return neighbours;
     }
 
@@ -184,5 +188,9 @@ public class AlgoNodeModel extends AlgoObservable{
 
         AlgoNodeModel node = (AlgoNodeModel) o;
         return this.algoPositionModel.equals(node.algoPositionModel);
+    }
+
+    public boolean isBoundaryNode() {
+        return this.isBoundaryNode;
     }
 }

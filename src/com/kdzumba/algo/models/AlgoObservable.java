@@ -13,18 +13,9 @@ public class AlgoObservable {
         return observer;
     }
 
-    public AlgoObserver removeObserver(AlgoObserver observer){
-        this.observers.remove(observer);
-        return observer;
-    }
-
     public void updateObservers(){
         for(AlgoObserver observer : this.observers){
             observer.update();
         }
-    }
-
-    public List<AlgoObserver> getObservers(){
-        return this.observers;
     }
 }

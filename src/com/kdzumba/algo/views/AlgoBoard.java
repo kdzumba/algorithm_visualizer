@@ -1,6 +1,5 @@
 package com.kdzumba.algo.views;
 
-import com.kdzumba.algo.interfaces.AlgoObserver;
 import com.kdzumba.algo.models.AlgoGraphModel;
 import com.kdzumba.algo.models.AlgoNodeModel;
 import com.kdzumba.algo.models.AlgoPositionModel;
@@ -10,7 +9,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Random;
-import java.util.Stack;
 
 /**
  * The AlgoBoard class models a visualization of a 2 dimensional graph
@@ -27,7 +25,7 @@ public class AlgoBoard extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
-                if(algoNodeModel.containsPoint(e.getX() + focusedLocation.getX(), e.getY() + focusedLocation.getY())){
+                if(!algoNodeModel.isBoundaryNode() && algoNodeModel.containsPoint(e.getX() + focusedLocation.getX(), e.getY() + focusedLocation.getY())){
                     algoNodeModel.setObstruction(true);
                 }
             }
@@ -47,7 +45,7 @@ public class AlgoBoard extends JPanel {
         //Randomly set the source and destination nodes on graph creation
         AlgoPositionModel srcPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
         AlgoPositionModel destPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
-        this.algoGraphModel.createGridGraphWithObstacles(xDimension, yDimension, srcPos, destPos);
+        this.algoGraphModel.createGridGraph(xDimension, yDimension, srcPos, destPos);
 
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();
         this.addMouseMotionListener(mouseMotionHandler);

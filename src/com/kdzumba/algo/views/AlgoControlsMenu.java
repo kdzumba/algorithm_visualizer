@@ -5,17 +5,26 @@ import com.kdzumba.algo.models.AlgoNodeModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
+import java.util.Queue;
 import java.util.Stack;
 
 public class AlgoControlsMenu extends JPanel {
-    private int animationDuration = 300; //in milliseconds
+    enum  CollectionType{
+        STACK,
+        QUEUE
+    }
+
+    private int animationDuration = 20; //in milliseconds
 
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
         AlgoButton clearBoardButton = new AlgoButton("Clear Board");
         clearBoardButton.addActionListener(e -> {
             for(AlgoNodeModel algoNodeModel : algoBoard.getGraph().getNodeList()){
-                algoNodeModel.setObstruction(false);
+                if(!algoNodeModel.isBoundaryNode()) {
+                    algoNodeModel.setObstruction(false);
+                }
                 algoNodeModel.setOnShortestPath(false);
                 algoNodeModel.setIsVisited(false);
                 algoNodeModel.updateObservers();
@@ -28,8 +37,7 @@ public class AlgoControlsMenu extends JPanel {
         AlgoButton visualizeButton = new AlgoButton("Visualize");
         visualizeButton.addActionListener(e -> {
             algoBoard.getGraph().clearShortestPath();
-            Algorithms.breadthFirstSearch(algoBoard.getGraph().getStartNode(), algoBoard.getGraph().getDestinationNode(), algoBoard.getGraph());
-            animateShortestPath(Algorithms.shortestPath(algoBoard.getGraph().getDestinationNode()));
+            this.animate(algoBoard);
         });
 
         this.add(visualizeButton);
@@ -37,20 +45,60 @@ public class AlgoControlsMenu extends JPanel {
         this.add(clearPathButton);
     }
 
-    private void animateShortestPath(Stack<AlgoNodeModel> pathNodes){
-        Thread thread = new Thread(() -> {
-            while (!pathNodes.isEmpty()) {
-                AlgoNodeModel current = pathNodes.pop();
-                current.updateObservers();
-                try {
-                    //TODO: make duration of sleep a controlled variable that the user can change
-                    Thread.sleep(animationDuration);
-                }
-                catch(InterruptedException exception){
-
-                }
+    /**
+     * Updates the observers of each node in the graph and pauses the execution of the program
+     * by a given amount. This is how animations of the nodes visitation and path are performed
+     * @param collection A collection of nodes to be animated (updated one after the other)
+     * @param collectionType The type of collection that is passed into the method, Can be stack or queue
+     */
+    private void animate(Collection collection, CollectionType collectionType){
+        while(!collection.isEmpty()){
+            AlgoNodeModel current;
+            switch(collectionType){
+                case QUEUE:
+                    current = ((Queue<AlgoNodeModel>) collection).remove();
+                    current.updateObservers();
+                    break;
+                case STACK:
+                    current = ((Stack<AlgoNodeModel>) collection).pop();
+                    current.updateObservers();
+                    break;
             }
+            try{
+                Thread.sleep(animationDuration);
+            }
+            catch(InterruptedException exception){
+
+            }
+        }
+    }
+
+    /**
+     * Probably not the best way to do this animation, but this function animates the visitation of the nodes
+     * on the graph, as well as the shortest path that it finds
+     * @param board The AlgoBoard on which to perform the animation
+     */
+    private void animate(AlgoBoard board){
+        //TODO: try to figure out another way to perform animation, this one feels off
+        //Each animation is handled by its own thread (node visiting and shortest path)
+        //The path thread is joined to the visited thread so that we only visualize the
+        //shortest path after the visited nodes have been animated
+        Thread visitedThread = new Thread(() -> {
+            Queue<AlgoNodeModel> visitedNodes = Algorithms.breadthFirstSearch(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+            this.animate(visitedNodes, CollectionType.QUEUE);
         });
-        thread.start();
+        visitedThread.start();
+
+        Thread pathThread = new Thread(() -> {
+            try{
+                visitedThread.join();
+            }
+            catch(InterruptedException exception){
+            }
+            Stack<AlgoNodeModel> pathNodes = Algorithms.shortestPath(board.getGraph().getDestinationNode());
+            this.animate(pathNodes, CollectionType.STACK);
+
+        });
+        pathThread.start();
     }
 }

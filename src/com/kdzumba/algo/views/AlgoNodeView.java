@@ -37,8 +37,10 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
     AlgoNodeView(AlgoNodeModel algoNodeModel){
         this.algoNodeModel = algoNodeModel;
         this.addActionListener(e -> {
-            algoNodeModel.setObstruction(!algoNodeModel.isObstruction());
-            updateColor();
+            if(!algoNodeModel.isBoundaryNode()){
+                algoNodeModel.setObstruction(!algoNodeModel.isObstruction());
+                updateColor();
+            }
         });
 
         this.addMouseMotionListener(new MouseMotionAdapter() {
