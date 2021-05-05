@@ -43,8 +43,8 @@ public class AlgoBoard extends JPanel {
         Random random = new Random();
 
         //Randomly set the source and destination nodes on graph creation
-        AlgoPositionModel srcPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
-        AlgoPositionModel destPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
+        AlgoPositionModel srcPos = new AlgoPositionModel(random.nextInt(xDimension -1) + 1, random.nextInt(yDimension -1) + 1);
+        AlgoPositionModel destPos = new AlgoPositionModel(random.nextInt(xDimension -1) + 1, random.nextInt(yDimension - 1) + 1);
         this.algoGraphModel.createGridGraph(xDimension, yDimension, srcPos, destPos);
 
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();

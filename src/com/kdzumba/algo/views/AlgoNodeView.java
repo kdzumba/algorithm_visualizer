@@ -23,7 +23,7 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
     private enum NodeColor {
         OBSTRUCTION(new Color(139, 69, 19)),
         START(new Color(0, 191, 255)),
-        DESTINATION(new Color(34, 139, 34)),
+        DESTINATION(new Color(204, 20, 20)),
         SHORTESTPATH(new Color(222, 184, 135)),
         VISITED(new Color(100, 150, 100)),
         DEFAULT(new Color(150, 150, 150))

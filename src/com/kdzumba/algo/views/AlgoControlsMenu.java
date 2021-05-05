@@ -37,7 +37,7 @@ public class AlgoControlsMenu extends JPanel {
         AlgoButton visualizeButton = new AlgoButton("Visualize");
         visualizeButton.addActionListener(e -> {
             algoBoard.getGraph().clearShortestPath();
-            this.animate(algoBoard);
+            this.doAnimate(algoBoard);
         });
 
         this.add(visualizeButton);
@@ -78,7 +78,7 @@ public class AlgoControlsMenu extends JPanel {
      * on the graph, as well as the shortest path that it finds
      * @param board The AlgoBoard on which to perform the animation
      */
-    private void animate(AlgoBoard board){
+    private void doAnimate(AlgoBoard board){
         //TODO: try to figure out another way to perform animation, this one feels off
         //Each animation is handled by its own thread (node visiting and shortest path)
         //The path thread is joined to the visited thread so that we only visualize the
