@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 
 /**
  * The AlgoNodeView is a visual representation of an AlgoNodeModel's state
@@ -60,10 +59,20 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         this.setBackground(NodeColor.DEFAULT.color);
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
-    }
+//    @Override
+//    public Dimension getPreferredSize() {
+//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+//    }
+//
+//    @Override
+//    public Dimension getMinimumSize(){
+//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+//    }
+//
+//    @Override
+//    public Dimension getMaximumSize(){
+//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+//    }
 
     public void updateColor(){
         if(this.algoNodeModel.isObstruction()){
@@ -84,7 +93,6 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         else{
             this.setBackground(NodeColor.DEFAULT.color);
         }
-
         repaint();
     }
 }

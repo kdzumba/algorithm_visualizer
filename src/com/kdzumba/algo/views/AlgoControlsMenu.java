@@ -4,6 +4,7 @@ import com.kdzumba.algo.Algorithms;
 import com.kdzumba.algo.models.AlgoNodeModel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Queue;
@@ -19,6 +20,8 @@ public class AlgoControlsMenu extends JPanel {
 
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(new EmptyBorder(new Insets(10, 10, 10, 5)));
         AlgoButton clearBoardButton = new AlgoButton("Clear Board");
         clearBoardButton.addActionListener(e -> {
             for(AlgoNodeModel algoNodeModel : algoBoard.getGraph().getNodeList()){
@@ -84,7 +87,7 @@ public class AlgoControlsMenu extends JPanel {
         //The path thread is joined to the visited thread so that we only visualize the
         //shortest path after the visited nodes have been animated
         Thread visitedThread = new Thread(() -> {
-            Queue<AlgoNodeModel> visitedNodes = Algorithms.breadthFirstSearch(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+            Queue<AlgoNodeModel> visitedNodes = Algorithms.dijkstra(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
             this.animate(visitedNodes, CollectionType.QUEUE);
         });
         visitedThread.start();

@@ -17,8 +17,8 @@ public class AlgoWindow extends JFrame {
         this.setLayout(new BorderLayout());
         AlgoBoard algoBoard = new AlgoBoard(xDimension, yDimension);
         AlgoControlsMenu menu = new AlgoControlsMenu(algoBoard);
-        this.add(algoBoard, BorderLayout.PAGE_END);
-        this.add(menu, BorderLayout.PAGE_START);
+        this.add(algoBoard, BorderLayout.CENTER);
+        this.add(menu, BorderLayout.LINE_START);
         this.pack();
         this.setVisible(true);
     }

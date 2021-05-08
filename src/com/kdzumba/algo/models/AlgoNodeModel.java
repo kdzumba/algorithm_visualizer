@@ -1,6 +1,6 @@
 package com.kdzumba.algo.models;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.lang.Math;
 
@@ -15,16 +15,29 @@ public class AlgoNodeModel extends AlgoObservable{
     private boolean isBoundaryNode = false;
     private AlgoNodeModel parent;
     private AlgoPositionModel algoPositionModel;
-    private final List<AlgoNodeModel> neighbours = new ArrayList<>();
+    private final List<AlgoNodeModel> neighbours = new LinkedList<>();
+    private final List<AlgoEdgeModel> edges = new LinkedList<>();
+    private double costSoFar;
+    private int visitNumber;
 
     public AlgoNodeModel(int xPos, int yPos){
         this.algoPositionModel = new AlgoPositionModel(xPos, yPos);
     }
 
-    AlgoNodeModel(int xPos, int yPos, boolean isDestination, boolean isStart){
-        this(xPos, yPos);
-        this.isDestination = isDestination;
-        this.isStart = isStart;
+    public double getCostSoFar(){
+        return this.costSoFar;
+    }
+
+    public void setCostSoFar(double costSoFar){
+        this.costSoFar = costSoFar;
+    }
+
+    public void setVisitNumber(int visitNumber){
+        this.visitNumber = visitNumber;
+    }
+
+    public int getVisitNumber(){
+        return this.visitNumber;
     }
 
     public AlgoPositionModel position(){
@@ -33,10 +46,6 @@ public class AlgoNodeModel extends AlgoObservable{
 
     public void setBoundaryNode(boolean isBoundaryNode){
         this.isBoundaryNode = isBoundaryNode;
-    }
-
-    public void setPosition(AlgoPositionModel algoPositionModel){
-        this.algoPositionModel = algoPositionModel;
     }
 
     /**
@@ -154,6 +163,10 @@ public class AlgoNodeModel extends AlgoObservable{
      */
     public List<AlgoNodeModel> getNeighbours() {
         return neighbours;
+    }
+
+    public void addEdge(AlgoEdgeModel edge){
+        this.edges.add(edge);
     }
 
     /**

@@ -39,7 +39,7 @@ public class AlgoBoard extends JPanel {
     AlgoBoard(int xDimension, int yDimension){
         this.xDimension = xDimension;
         this.yDimension = yDimension;
-        this.setBackground(new Color(80, 80, 80));
+        this.setBackground(Color.darkGray);
         Random random = new Random();
 
         //Randomly set the source and destination nodes on graph creation
@@ -50,6 +50,7 @@ public class AlgoBoard extends JPanel {
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();
         this.addMouseMotionListener(mouseMotionHandler);
         this.setLayout(new GridLayout(xDimension, yDimension, NODEMARGIN, NODEMARGIN));
+//        this.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
 
         //Create a node view for each node model in the graph's node list
         for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){

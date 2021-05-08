@@ -3,11 +3,8 @@ package com.kdzumba.algo.models;
 import java.util.*;
 
 public class AlgoGraphModel {
-    //Using List for nodes and edges because a List maintains insert order, and this
-    //is useful for mapping between NodeModels and NodeViews
     private final List<AlgoNodeModel> nodeList = new ArrayList<>();
-    private final List<Edge> edgeSet = new ArrayList<>();
-    private int size;
+    private final List<AlgoEdgeModel> edgeList = new ArrayList<>();
     private AlgoNodeModel startNode;
     private AlgoNodeModel destinationNode;
 
@@ -62,10 +59,12 @@ public class AlgoGraphModel {
                     node.setIsDestination(true);
                     this.destinationNode = node;
                 }
-                if(i == xDimension - 1 || i == 0 || j == yDimension - 1 || j == 0){
-                    node.setBoundaryNode(true);
-                    node.setObstruction(true);
-                }
+
+//                Uncomment for border of obstructions around the grid
+//                if(i == xDimension - 1 || i == 0 || j == yDimension - 1 || j == 0){
+//                    node.setBoundaryNode(true);
+//                    node.setObstruction(true);
+//                }
                 this.addNode(node);
             }
         }
@@ -75,7 +74,9 @@ public class AlgoGraphModel {
             for(AlgoNodeModel other : nodeList){
                 if(!node.equals(other) && node.distanceTo(other) <= AlgoNodeModel.SIZE){
                     node.addNeighbour(other);
-                    this.createEdge(node, other);
+                    AlgoEdgeModel edgeModel = new AlgoEdgeModel(node, other, node.distanceTo(other));
+                    node.addEdge(edgeModel);
+                    edgeList.add(edgeModel);
                 }
             }
         });
@@ -139,10 +140,6 @@ public class AlgoGraphModel {
         return this.nodeList;
     }
 
-    public int getSize(){
-        return this.size;
-    }
-
     /**
      * Creates an edge between two nodes in the graph's node set
      * @param src Source node
@@ -154,8 +151,8 @@ public class AlgoGraphModel {
         if(!this.nodeList.contains(src) || !this.nodeList.contains(dest)){
             System.out.println("Source and destination should be in the graph");
         }else{
-            Edge edge = new Edge(src, dest, weight);
-            this.edgeSet.add(edge);
+            AlgoEdgeModel edge = new AlgoEdgeModel(src, dest, weight);
+            this.edgeList.add(edge);
         }
     }
 
@@ -175,8 +172,8 @@ public class AlgoGraphModel {
      * Removes an edge from this graph if it is contained in the list of edges
      * @param edge An edge to be removed
      */
-    public void removeEdge(final Edge edge){
-        this.edgeSet.remove(edge);
+    public void removeEdge(final AlgoEdgeModel edge){
+        this.edgeList.remove(edge);
     }
 
     /**
@@ -185,7 +182,6 @@ public class AlgoGraphModel {
      */
     public void addNode(final AlgoNodeModel node){
         this.nodeList.add(node);
-        this.size ++;
     }
 
     /**
@@ -197,9 +193,9 @@ public class AlgoGraphModel {
         //First remove all edges that are comprised of the node to be removed
         //TODO Figure out if we really neet a try catch here??
        try{
-           edgeSet.forEach(edge -> {
+           edgeList.forEach(edge -> {
                if(edge.source.equals(node) || edge.destination.equals(node)){
-                   this.edgeSet.remove(edge);
+                   this.edgeList.remove(edge);
                }
            });
        }
@@ -211,15 +207,8 @@ public class AlgoGraphModel {
        this.nodeList.remove(node);
     }
 
-    public static class Edge{
-        AlgoNodeModel source;
-        AlgoNodeModel destination;
-        double weight;
-
-        Edge(AlgoNodeModel fromNode, AlgoNodeModel toNode, double weight){
-            this.source = fromNode;
-            this.destination = toNode;
-            this.weight = weight;
-        }
+    public List<AlgoEdgeModel> getEdgeList() {
+        return this.edgeList;
     }
+
 }

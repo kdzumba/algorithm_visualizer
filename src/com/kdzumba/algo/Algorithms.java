@@ -40,6 +40,36 @@ public class Algorithms {
         return visited;
     }
 
+    public static Queue<AlgoNodeModel> dijkstra(final AlgoNodeModel src, final AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
+        Queue<AlgoNodeModel> visited = new LinkedList<>();
+        Queue<AlgoNodeModel> frontier = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getCostSoFar));
+
+        for(AlgoNodeModel nodeModel : algoGraphModel.getNodeList()){
+            nodeModel.setCostSoFar(Double.POSITIVE_INFINITY);
+        }
+
+        src.setCostSoFar(0); //This is the cost to get to this node
+        frontier.add(src);
+
+        while(!frontier.isEmpty()){
+            AlgoNodeModel current = frontier.remove();
+            if(current == dest){
+                break;
+            }
+            for(AlgoNodeModel nodeModel : current.getNeighbours()){
+                double costSoFar = current.getCostSoFar() + current.distanceTo(nodeModel);
+                if(!nodeModel.isObstruction() && !nodeModel.isVisited() && costSoFar < nodeModel.getCostSoFar()){
+                    nodeModel.setCostSoFar(costSoFar);
+                    nodeModel.setParent(current);
+                    frontier.add(nodeModel);
+                    visited.add(current);
+                    current.setIsVisited(true);
+                }
+            }
+        }
+
+        return visited;
+    }
 
     /**
      * Traces the shortest path from a destination node to the start node. Note that this function is agnostic to the
