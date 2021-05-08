@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -16,36 +17,80 @@ public class AlgoControlsMenu extends JPanel {
         QUEUE
     }
 
-    private int animationDuration = 20; //in milliseconds
+    enum Algorithm{
+        BFS,
+        DIJKSTRA
+    }
+
+    private final int animationDuration = 20; //in milliseconds
+    private String algorithms[] = {"BFS", "Dijkstra"};
+    private Algorithm selectedAlgorithm;
+    private final AlgoButton clearBoardButton;
+    private final AlgoButton clearPathButton;
+    private final AlgoButton clearVisitedButton;
+    private final AlgoButton clearObstructionsButton;
+    private final AlgoButton visualizeButton;
+    private final AlgoComboBox algorithmsSelect;
 
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBorder(new EmptyBorder(new Insets(10, 10, 10, 5)));
-        AlgoButton clearBoardButton = new AlgoButton("Clear Board");
+
+        clearBoardButton = new AlgoButton("Clear Board");
         clearBoardButton.addActionListener(e -> {
-            for(AlgoNodeModel algoNodeModel : algoBoard.getGraph().getNodeList()){
-                if(!algoNodeModel.isBoundaryNode()) {
-                    algoNodeModel.setObstruction(false);
-                }
-                algoNodeModel.setOnShortestPath(false);
-                algoNodeModel.setIsVisited(false);
-                algoNodeModel.updateObservers();
-            }
+            algoBoard.getGraph().clearVisitedNodes();
+            algoBoard.getGraph().clearObstructions();
+            algoBoard.getGraph().clearShortestPath();
+            algoBoard.getGraph().updateNodeObservers();
         });
 
-        AlgoButton clearPathButton = new AlgoButton("Clear Path");
-        clearPathButton.addActionListener(e -> algoBoard.getGraph().clearShortestPath());
+        clearPathButton = new AlgoButton("Clear Path");
+        clearPathButton.addActionListener(e -> {
+            algoBoard.getGraph().clearShortestPath();
+            algoBoard.getGraph().updateNodeObservers();
+        });
 
-        AlgoButton visualizeButton = new AlgoButton("Visualize");
+        clearVisitedButton = new AlgoButton("Clear Visited");
+        clearVisitedButton.addActionListener(e -> {
+            algoBoard.getGraph().clearVisitedNodes();
+            algoBoard.getGraph().updateNodeObservers();
+        });
+
+        clearObstructionsButton = new AlgoButton("Clear Obstructions");
+        clearObstructionsButton.addActionListener(e -> {
+            algoBoard.getGraph().clearObstructions();
+            algoBoard.getGraph().updateNodeObservers();
+        });
+
+        visualizeButton = new AlgoButton("Visualize");
         visualizeButton.addActionListener(e -> {
             algoBoard.getGraph().clearShortestPath();
+            algoBoard.getGraph().clearVisitedNodes();
+            algoBoard.getGraph().updateNodeObservers();
             this.doAnimate(algoBoard);
         });
 
+        algorithmsSelect = new AlgoComboBox(this.algorithms);
+        algorithmsSelect.addActionListener(e -> {
+            AlgoComboBox comboBox = (AlgoComboBox) e.getSource();
+            String selectedAlgo = (String) comboBox.getSelectedItem();
+            if(selectedAlgo == "BFS"){
+                this.selectedAlgorithm = Algorithm.BFS;
+            }
+            else if(selectedAlgo == "Dijkstra"){
+                this.selectedAlgorithm = Algorithm.DIJKSTRA;
+            }
+        });
+        algorithmsSelect.setSelectedItem("BFS");
+        algorithmsSelect.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        this.add(algorithmsSelect);
         this.add(visualizeButton);
         this.add(clearBoardButton);
         this.add(clearPathButton);
+        this.add(clearVisitedButton);
+        this.add(clearObstructionsButton);
     }
 
     /**
@@ -82,12 +127,23 @@ public class AlgoControlsMenu extends JPanel {
      * @param board The AlgoBoard on which to perform the animation
      */
     private void doAnimate(AlgoBoard board){
+
+        this.deactivateButtons();
         //TODO: try to figure out another way to perform animation, this one feels off
         //Each animation is handled by its own thread (node visiting and shortest path)
         //The path thread is joined to the visited thread so that we only visualize the
         //shortest path after the visited nodes have been animated
         Thread visitedThread = new Thread(() -> {
-            Queue<AlgoNodeModel> visitedNodes = Algorithms.dijkstra(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+            Queue<AlgoNodeModel> visitedNodes = new LinkedList<>();
+            switch(this.selectedAlgorithm){
+                case BFS:
+                    visitedNodes = Algorithms.breadthFirstSearch(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+                    break;
+                case DIJKSTRA:
+                    visitedNodes = Algorithms.dijkstra(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+                    break;
+            }
+
             this.animate(visitedNodes, CollectionType.QUEUE);
         });
         visitedThread.start();
@@ -100,8 +156,25 @@ public class AlgoControlsMenu extends JPanel {
             }
             Stack<AlgoNodeModel> pathNodes = Algorithms.shortestPath(board.getGraph().getDestinationNode());
             this.animate(pathNodes, CollectionType.STACK);
+            this.activateButtons();
 
         });
         pathThread.start();
+    }
+
+    private void deactivateButtons(){
+        this.visualizeButton.setEnabled(false);
+        this.clearBoardButton.setEnabled(false);
+        this.clearObstructionsButton.setEnabled(false);
+        this.clearVisitedButton.setEnabled(false);
+        this.clearPathButton.setEnabled(false);
+    }
+
+    private void activateButtons(){
+        this.visualizeButton.setEnabled(true);
+        this.clearBoardButton.setEnabled(true);
+        this.clearObstructionsButton.setEnabled(true);
+        this.clearVisitedButton.setEnabled(true);
+        this.clearPathButton.setEnabled(true);
     }
 }

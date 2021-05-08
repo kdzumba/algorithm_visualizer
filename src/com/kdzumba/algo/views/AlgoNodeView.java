@@ -59,20 +59,20 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         this.setBackground(NodeColor.DEFAULT.color);
     }
 
-//    @Override
-//    public Dimension getPreferredSize() {
-//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
-//    }
-//
-//    @Override
-//    public Dimension getMinimumSize(){
-//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
-//    }
-//
-//    @Override
-//    public Dimension getMaximumSize(){
-//        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
-//    }
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+    }
+
+    @Override
+    public Dimension getMinimumSize(){
+        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+    }
+
+    @Override
+    public Dimension getMaximumSize(){
+        return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
+    }
 
     public void updateColor(){
         if(this.algoNodeModel.isObstruction()){

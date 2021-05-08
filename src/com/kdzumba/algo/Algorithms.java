@@ -41,8 +41,8 @@ public class Algorithms {
     }
 
     public static Queue<AlgoNodeModel> dijkstra(final AlgoNodeModel src, final AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
-        Queue<AlgoNodeModel> visited = new LinkedList<>();
-        Queue<AlgoNodeModel> frontier = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getCostSoFar));
+        Queue<AlgoNodeModel> visited = new LinkedList<>(); //Queue of nodes already processed
+        Queue<AlgoNodeModel> frontier = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getCostSoFar)); //Queue of nodes to be processed
 
         for(AlgoNodeModel nodeModel : algoGraphModel.getNodeList()){
             nodeModel.setCostSoFar(Double.POSITIVE_INFINITY);
@@ -67,7 +67,6 @@ public class Algorithms {
                 }
             }
         }
-
         return visited;
     }
 

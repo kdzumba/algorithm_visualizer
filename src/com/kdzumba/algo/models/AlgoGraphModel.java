@@ -123,6 +123,24 @@ public class AlgoGraphModel {
         }
     }
 
+    public void clearVisitedNodes(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.setIsVisited(false);
+        }
+    }
+
+    public void clearObstructions(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.setObstruction(false);
+        }
+    }
+
+    public void updateNodeObservers(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.updateObservers();
+        }
+    }
+
     public AlgoNodeModel getStartNode(){
         return this.startNode;
     }

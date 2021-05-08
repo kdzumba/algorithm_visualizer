@@ -3,11 +3,11 @@ package com.kdzumba.algo.views;
 import javax.swing.*;
 import java.awt.*;
 
-public class AlgoButton extends JButton {
-    AlgoButton(String text){
-        super(text);
+public class AlgoComboBox extends JComboBox {
+    public AlgoComboBox(String[] options){
+        super(options);
         this.setBackground(UICommon.COMPONENT_BACKGROUND);
-        this.setFont(new Font(Font.MONOSPACED, Font.TRUETYPE_FONT, 16));
+        this.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
         this.setForeground(Color.white);
         this.setFocusable(false);
     }
