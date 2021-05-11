@@ -22,7 +22,7 @@ public class AlgoControlsMenu extends JPanel {
         DIJKSTRA
     }
 
-    private final int animationDuration = 20; //in milliseconds
+    private int animationDuration = AlgoSlider.DEFAULT_DELAY; //in milliseconds
     private String algorithms[] = {"BFS", "Dijkstra"};
     private Algorithm selectedAlgorithm;
     private final AlgoButton clearBoardButton;
@@ -31,6 +31,7 @@ public class AlgoControlsMenu extends JPanel {
     private final AlgoButton clearObstructionsButton;
     private final AlgoButton visualizeButton;
     private final AlgoComboBox algorithmsSelect;
+    private final AlgoSlider animationController;
 
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
@@ -85,12 +86,17 @@ public class AlgoControlsMenu extends JPanel {
         algorithmsSelect.setSelectedItem("BFS");
         algorithmsSelect.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        animationController = new AlgoSlider(JSlider.HORIZONTAL);
+        animationController.setAlignmentX(Component.LEFT_ALIGNMENT);
+        animationController.addChangeListener(e -> animationDuration = ((AlgoSlider)e.getSource()).getValue());
+
         this.add(algorithmsSelect);
         this.add(visualizeButton);
         this.add(clearBoardButton);
         this.add(clearPathButton);
         this.add(clearVisitedButton);
         this.add(clearObstructionsButton);
+        this.add(animationController);
     }
 
     /**
@@ -133,7 +139,7 @@ public class AlgoControlsMenu extends JPanel {
         //Each animation is handled by its own thread (node visiting and shortest path)
         //The path thread is joined to the visited thread so that we only visualize the
         //shortest path after the visited nodes have been animated
-        Thread visitedThread = new Thread(() -> {
+        Thread algorithmThread = new Thread(() -> {
             Queue<AlgoNodeModel> visitedNodes = new LinkedList<>();
             switch(this.selectedAlgorithm){
                 case BFS:
@@ -146,11 +152,11 @@ public class AlgoControlsMenu extends JPanel {
 
             this.animate(visitedNodes, CollectionType.QUEUE);
         });
-        visitedThread.start();
+        algorithmThread.start();
 
         Thread pathThread = new Thread(() -> {
             try{
-                visitedThread.join();
+                algorithmThread.join();
             }
             catch(InterruptedException exception){
             }

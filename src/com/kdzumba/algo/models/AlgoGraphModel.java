@@ -69,7 +69,7 @@ public class AlgoGraphModel {
             }
         }
         //Hypotenuse of a (SIZE, SIZE, sqrt(SIZE^2 + SIZE^2)) resulting from fixed size node
-        //double maxDistance = Node.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
+//        double maxDistance = AlgoNodeModel.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
         nodeList.forEach(node -> {
             for(AlgoNodeModel other : nodeList){
                 if(!node.equals(other) && node.distanceTo(other) <= AlgoNodeModel.SIZE){
