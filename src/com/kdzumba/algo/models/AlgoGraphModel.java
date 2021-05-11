@@ -2,7 +2,7 @@ package com.kdzumba.algo.models;
 
 import java.util.*;
 
-public class AlgoGraphModel {
+public class AlgoGraphModel extends AlgoObservable{
     private final List<AlgoNodeModel> nodeList = new ArrayList<>();
     private final List<AlgoEdgeModel> edgeList = new ArrayList<>();
     private AlgoNodeModel startNode;
@@ -229,4 +229,25 @@ public class AlgoGraphModel {
         return this.edgeList;
     }
 
+    public int getVisitedNodesCount() {
+        int count = 0;
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            if(nodeModel.isVisited()){
+                count ++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getPathLength() {
+        int count = 0;
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            if(nodeModel.onShortestPath()){
+                count ++;
+            }
+        }
+
+        return count;
+    }
 }

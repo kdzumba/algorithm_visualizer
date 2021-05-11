@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.Hashtable;
 
 public class AlgoSlider extends JSlider {
-    static final public int MIN_DELAY = 5;
+    static final public int MIN_DELAY = 1;
     static final public int MAX_DELAY = 200;
     static final public int DEFAULT_DELAY = 20;
 
@@ -15,15 +15,15 @@ public class AlgoSlider extends JSlider {
         this.setMaximum(this.MAX_DELAY);
         this.setValue(this.DEFAULT_DELAY);
         this.setBackground(UICommon.COMPONENT_BACKGROUND);
-        this.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        this.setFont(UICommon.ALGO_FONT);
         this.setForeground(Color.white);
 
         Hashtable labelTable = new Hashtable();
         JLabel slow = new JLabel("Fast");
-        slow.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        slow.setFont(UICommon.ALGO_FONT);
         slow.setForeground(Color.white);
         JLabel fast = new JLabel("Slow");
-        fast.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        fast.setFont(UICommon.ALGO_FONT);
         fast.setForeground(Color.white);
         labelTable.put(this.MIN_DELAY, slow);
         labelTable.put(this.MAX_DELAY,fast);

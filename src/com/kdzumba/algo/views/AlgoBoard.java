@@ -5,6 +5,7 @@ import com.kdzumba.algo.models.AlgoNodeModel;
 import com.kdzumba.algo.models.AlgoPositionModel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -17,7 +18,7 @@ public class AlgoBoard extends JPanel {
 
     private final int xDimension;
     private final int yDimension;
-    private final int NODEMARGIN = 0;
+    private final int NODEMARGIN = 1;
     private final AlgoGraphModel algoGraphModel = new AlgoGraphModel();
     private AlgoPositionModel focusedLocation;
 

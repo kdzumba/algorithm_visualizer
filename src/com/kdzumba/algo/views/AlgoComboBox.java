@@ -7,7 +7,7 @@ public class AlgoComboBox extends JComboBox {
     public AlgoComboBox(String[] options){
         super(options);
         this.setBackground(UICommon.COMPONENT_BACKGROUND);
-        this.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        this.setFont(UICommon.ALGO_FONT);
         this.setForeground(Color.white);
         this.setFocusable(false);
     }

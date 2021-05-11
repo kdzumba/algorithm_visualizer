@@ -36,7 +36,7 @@ public class AlgoControlsMenu extends JPanel {
     AlgoControlsMenu(final AlgoBoard algoBoard){
         this.setBackground(Color.darkGray);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(new EmptyBorder(new Insets(10, 10, 10, 5)));
+//        this.setBorder(new EmptyBorder(new Insets(10, 10, 10, 5)));
 
         clearBoardButton = new AlgoButton("Clear Board");
         clearBoardButton.addActionListener(e -> {
@@ -50,12 +50,14 @@ public class AlgoControlsMenu extends JPanel {
         clearPathButton.addActionListener(e -> {
             algoBoard.getGraph().clearShortestPath();
             algoBoard.getGraph().updateNodeObservers();
+            algoBoard.getGraph().updateObservers();
         });
 
         clearVisitedButton = new AlgoButton("Clear Visited");
         clearVisitedButton.addActionListener(e -> {
             algoBoard.getGraph().clearVisitedNodes();
             algoBoard.getGraph().updateNodeObservers();
+            algoBoard.getGraph().updateObservers();
         });
 
         clearObstructionsButton = new AlgoButton("Clear Obstructions");
@@ -166,6 +168,17 @@ public class AlgoControlsMenu extends JPanel {
 
         });
         pathThread.start();
+
+        Thread metricsThread = new Thread(() -> {
+            try{
+                pathThread.join();
+            }
+            catch (InterruptedException exception){
+
+            }
+            board.getGraph().updateObservers();
+        });
+        metricsThread.start();
     }
 
     private void deactivateButtons(){

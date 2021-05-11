@@ -7,7 +7,7 @@ public class AlgoButton extends JButton {
     AlgoButton(String text){
         super(text);
         this.setBackground(UICommon.COMPONENT_BACKGROUND);
-        this.setFont(new Font(Font.MONOSPACED, Font.TRUETYPE_FONT, 16));
+        this.setFont(UICommon.ALGO_FONT);
         this.setForeground(Color.white);
         this.setFocusable(false);
     }
