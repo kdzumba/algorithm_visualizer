@@ -5,7 +5,6 @@ import com.kdzumba.algo.models.AlgoNodeModel;
 import com.kdzumba.algo.models.AlgoPositionModel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -18,7 +17,7 @@ public class AlgoBoard extends JPanel {
 
     private final int xDimension;
     private final int yDimension;
-    private final int NODEMARGIN = 1;
+    private final int NODEMARGIN = 0;
     private final AlgoGraphModel algoGraphModel = new AlgoGraphModel();
     private AlgoPositionModel focusedLocation;
 
@@ -27,7 +26,13 @@ public class AlgoBoard extends JPanel {
         public void mouseDragged(MouseEvent e) {
             for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){
                 if(!algoNodeModel.isBoundaryNode() && algoNodeModel.containsPoint(e.getX() + focusedLocation.getX(), e.getY() + focusedLocation.getY())){
-                    algoNodeModel.setObstruction(true);
+                    switch (AlgoTerrainPicker.selectedType){
+                        case WALL -> algoNodeModel.setWall(true);
+                        case ROCKY -> algoNodeModel.setRocky(true);
+                        case WATER -> algoNodeModel.setWater(true);
+                        case PORTAL -> algoNodeModel.setPortal(true);
+                        case GRASS -> algoNodeModel.setGrass(true);
+                    }
                 }
             }
         }
@@ -40,18 +45,18 @@ public class AlgoBoard extends JPanel {
     AlgoBoard(int xDimension, int yDimension){
         this.xDimension = xDimension;
         this.yDimension = yDimension;
-        this.setBackground(Color.darkGray);
+        this.setBackground(Color.darkGray);// Color(40, 40, 40));
+        this.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
         Random random = new Random();
 
         //Randomly set the source and destination nodes on graph creation
-        AlgoPositionModel srcPos = new AlgoPositionModel(random.nextInt(xDimension) + 1, random.nextInt(yDimension ) + 1);
-        AlgoPositionModel destPos = new AlgoPositionModel(random.nextInt(xDimension) + 1, random.nextInt(yDimension ) + 1);
+        AlgoPositionModel srcPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
+        AlgoPositionModel destPos = new AlgoPositionModel(random.nextInt(xDimension), random.nextInt(yDimension));
         this.algoGraphModel.createGridGraph(xDimension, yDimension, srcPos, destPos);
 
         MouseMotionHandler mouseMotionHandler = new MouseMotionHandler();
         this.addMouseMotionListener(mouseMotionHandler);
         this.setLayout(new GridLayout(xDimension, yDimension, NODEMARGIN, NODEMARGIN));
-//        this.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 5));
 
         //Create a node view for each node model in the graph's node list
         for(AlgoNodeModel algoNodeModel : algoGraphModel.getNodeList()){

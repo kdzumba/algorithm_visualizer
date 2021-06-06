@@ -51,6 +51,10 @@ public class AlgoGraphModel extends AlgoObservable{
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
                 AlgoNodeModel node = new AlgoNodeModel(j * AlgoNodeModel.SIZE, i * AlgoNodeModel.SIZE);
+
+                if(i == j){
+                    node.setWeight(10);
+                }
                 if(this.startNode == null && i == src.getX() && j == src.getY()){
                     node.setIsStart(true);
                     this.startNode = node;
@@ -69,7 +73,7 @@ public class AlgoGraphModel extends AlgoObservable{
             }
         }
         //Hypotenuse of a (SIZE, SIZE, sqrt(SIZE^2 + SIZE^2)) resulting from fixed size node
-//        double maxDistance = AlgoNodeModel.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
+        double maxDistance = AlgoNodeModel.SIZE * Math.sqrt(2); //Used when diagonal movement is allowed
         nodeList.forEach(node -> {
             for(AlgoNodeModel other : nodeList){
                 if(!node.equals(other) && node.distanceTo(other) <= AlgoNodeModel.SIZE){
@@ -111,7 +115,7 @@ public class AlgoGraphModel extends AlgoObservable{
             for (AlgoNodeModel node : this.nodeList) {
                 //Make sure that start and end node don't become obstruction nodes
                 if(!node.equals(startNode) && !node.equals(destinationNode) && node.position().equals(algoPositionModel)){
-                    node.setObstruction(true);
+                    node.setWall(true);
                 }
             }
         }
@@ -131,7 +135,7 @@ public class AlgoGraphModel extends AlgoObservable{
 
     public void clearObstructions(){
         for(AlgoNodeModel nodeModel : this.nodeList){
-            nodeModel.setObstruction(false);
+            nodeModel.setWall(false);
         }
     }
 
@@ -236,7 +240,6 @@ public class AlgoGraphModel extends AlgoObservable{
                 count ++;
             }
         }
-
         return count;
     }
 
@@ -249,5 +252,15 @@ public class AlgoGraphModel extends AlgoObservable{
         }
 
         return count;
+    }
+
+    public double getPathCost(){
+        double cost = 0;
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            if(nodeModel.onShortestPath()){
+                cost += nodeModel.getGCost();
+            }
+        }
+        return cost;
     }
 }

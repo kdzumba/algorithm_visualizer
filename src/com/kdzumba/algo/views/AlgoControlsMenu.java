@@ -19,11 +19,12 @@ public class AlgoControlsMenu extends JPanel {
 
     enum Algorithm{
         BFS,
-        DIJKSTRA
+        DIJKSTRA,
+        ASTAR,
     }
 
     private int animationDuration = AlgoSlider.DEFAULT_DELAY; //in milliseconds
-    private String algorithms[] = {"BFS", "Dijkstra"};
+    private String algorithms[] = {"BFS", "Dijkstra", "A*"};
     private Algorithm selectedAlgorithm;
     private final AlgoButton clearBoardButton;
     private final AlgoButton clearPathButton;
@@ -83,6 +84,9 @@ public class AlgoControlsMenu extends JPanel {
             }
             else if(selectedAlgo == "Dijkstra"){
                 this.selectedAlgorithm = Algorithm.DIJKSTRA;
+            }
+            else if(selectedAlgo == "A*"){
+                this.selectedAlgorithm = Algorithm.ASTAR;
             }
         });
         algorithmsSelect.setSelectedItem("BFS");
@@ -150,6 +154,10 @@ public class AlgoControlsMenu extends JPanel {
                 case DIJKSTRA:
                     visitedNodes = Algorithms.dijkstra(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
                     break;
+
+                case ASTAR:
+                    visitedNodes = Algorithms.aStar(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+                    break;
             }
 
             this.animate(visitedNodes, CollectionType.QUEUE);
@@ -162,6 +170,7 @@ public class AlgoControlsMenu extends JPanel {
             }
             catch(InterruptedException exception){
             }
+
             Stack<AlgoNodeModel> pathNodes = Algorithms.shortestPath(board.getGraph().getDestinationNode());
             this.animate(pathNodes, CollectionType.STACK);
             this.activateButtons();

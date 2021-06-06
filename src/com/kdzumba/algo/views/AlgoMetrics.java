@@ -1,5 +1,6 @@
 package com.kdzumba.algo.views;
 
+import com.kdzumba.algo.Algorithms;
 import com.kdzumba.algo.interfaces.AlgoObserver;
 import com.kdzumba.algo.models.AlgoGraphModel;
 
@@ -12,7 +13,9 @@ public class AlgoMetrics extends JPanel implements AlgoObserver {
 
     private final AlgoLabel visitedNodesLabel;
     private final AlgoLabel pathLengthLabel;
-    private final int SIZE = 2;
+    private final AlgoLabel runningTimeLabel;
+    private final AlgoLabel pathCostLabel;
+    private final int SIZE = 4;
     AlgoGraphModel graphModel;
 
     public AlgoMetrics(AlgoGraphModel graphModel){
@@ -24,9 +27,13 @@ public class AlgoMetrics extends JPanel implements AlgoObserver {
         this.setBorder(BorderFactory.createTitledBorder(metricsBorder, "Algorithm Metrics", TitledBorder.LEFT, TitledBorder.TOP, UICommon.ALGO_FONT, Color.white));
         this.visitedNodesLabel = new AlgoLabel("Visited Nodes: " );
         this.pathLengthLabel = new AlgoLabel("Path Length: ");
+        this.pathCostLabel = new AlgoLabel("Path Cost: ");
+        this.runningTimeLabel = new AlgoLabel("Running Time: ");
 
         this.add(this.visitedNodesLabel);
         this.add(this.pathLengthLabel);
+        this.add(this.pathCostLabel);
+        this.add(this.runningTimeLabel);
     }
 
     @Override
@@ -48,5 +55,7 @@ public class AlgoMetrics extends JPanel implements AlgoObserver {
     public void update() {
         this.visitedNodesLabel.setText("Visited Nodes: " + this.graphModel.getVisitedNodesCount());
         this.pathLengthLabel.setText("Path Length: " + this.graphModel.getPathLength());
+        this.pathCostLabel.setText("Path Cost: " + this.graphModel.getDestinationNode().getGCost());
+        this.runningTimeLabel.setText("Running Time: " + Algorithms.runningTime + " ms");
     }
 }

@@ -6,14 +6,14 @@ import java.util.Hashtable;
 
 public class AlgoSlider extends JSlider {
     static final public int MIN_DELAY = 1;
-    static final public int MAX_DELAY = 200;
-    static final public int DEFAULT_DELAY = 20;
+    static final public int MAX_DELAY = 300;
+    static final public int DEFAULT_DELAY = 50;
 
     public AlgoSlider(int orientation){
         super(orientation);
-        this.setMinimum(this.MIN_DELAY);
-        this.setMaximum(this.MAX_DELAY);
-        this.setValue(this.DEFAULT_DELAY);
+        this.setMinimum(MIN_DELAY);
+        this.setMaximum(MAX_DELAY);
+        this.setValue(DEFAULT_DELAY);
         this.setBackground(UICommon.COMPONENT_BACKGROUND);
         this.setFont(UICommon.ALGO_FONT);
         this.setForeground(Color.white);

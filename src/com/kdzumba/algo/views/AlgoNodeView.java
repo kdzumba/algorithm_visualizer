@@ -20,12 +20,9 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
     }
 
     private enum NodeColor {
-        OBSTRUCTION(new Color(139, 69, 19)),
-        START(new Color(0, 191, 255)),
-        DESTINATION(new Color(204, 20, 20)),
-        SHORTESTPATH(new Color(222, 184, 135)),
-        VISITED(new Color(100, 150, 100)),
-        DEFAULT(new Color(150, 150, 150))
+        VISITED(UICommon.PROCESSED_COLOR),
+        PORTAL(Color.BLUE),
+        DEFAULT(Color.white)
         ;
         private final Color color;
         NodeColor(Color color) {
@@ -37,7 +34,13 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         this.algoNodeModel = algoNodeModel;
         this.addActionListener(e -> {
             if(!algoNodeModel.isBoundaryNode()){
-                algoNodeModel.setObstruction(!algoNodeModel.isObstruction());
+                switch(AlgoTerrainPicker.selectedType) {
+                    case PORTAL -> algoNodeModel.setPortal(!algoNodeModel.isPortal());
+                    case WATER -> algoNodeModel.setWater(!algoNodeModel.isWater());
+                    case ROCKY -> algoNodeModel.setRocky(!algoNodeModel.isRocky());
+                    case GRASS -> algoNodeModel.setGrass(!algoNodeModel.isGrass());
+                    default -> algoNodeModel.setWall(!algoNodeModel.isWall());
+                }
                 updateColor();
             }
         });
@@ -75,20 +78,32 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
     }
 
     public void updateColor(){
-        if(this.algoNodeModel.isObstruction()){
-            this.setBackground(NodeColor.OBSTRUCTION.color);
+        if(this.algoNodeModel.isWall()){
+            this.setBackground(UICommon.WALL_COLOR);
         }
         else if(this.algoNodeModel.isDestination()){
-            this.setBackground(NodeColor.DESTINATION.color);
+            this.setBackground(UICommon.DEST_COLOR);
         }
         else if(this.algoNodeModel.isStart()){
-            this.setBackground(NodeColor.START.color);
+            this.setBackground(UICommon.START_COLOR);
         }
         else if(this.algoNodeModel.onShortestPath()){
-            this.setBackground(NodeColor.SHORTESTPATH.color);
+            this.setBackground(UICommon.PATH_COLOR);
         }
         else if(this.algoNodeModel.isVisited()){
             this.setBackground(NodeColor.VISITED.color);
+        }
+        else if(this.algoNodeModel.isPortal()){
+            this.setBackground(NodeColor.PORTAL.color);
+        }
+        else if(this.algoNodeModel.isRocky()){
+            this.setBackground(UICommon.ROCK_COLOR);
+        }
+        else if(this.algoNodeModel.isWater()){
+            this.setBackground(UICommon.WATER_COLOR);
+        }
+        else if(this.algoNodeModel.isGrass()){
+            this.setBackground(UICommon.GRASS_COLOR);
         }
         else{
             this.setBackground(NodeColor.DEFAULT.color);

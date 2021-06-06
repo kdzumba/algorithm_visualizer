@@ -6,39 +6,47 @@ import java.lang.Math;
 
 public class AlgoNodeModel extends AlgoObservable{
 
-    public final static int SIZE = 25; //Width and height (Nodes are square blocks)
+    public final static int SIZE = 30; //Width and height (Nodes are square blocks)
     private boolean isDestination = false;
     private boolean isStart = false;
-    private boolean isObstruction = false;
+    private boolean isWall = false;
     private boolean isVisited = false;
     private boolean onShortestPath = false;
     private boolean isBoundaryNode = false;
+    private double gCost; //This is the distance from the start node to this node
+    private double fCost;
+    private double weight = SIZE;
     private AlgoNodeModel parent;
     private AlgoPositionModel algoPositionModel;
     private final List<AlgoNodeModel> neighbours = new LinkedList<>();
     private final List<AlgoEdgeModel> edges = new LinkedList<>();
-    private double costSoFar;
-    private int visitNumber;
+    private boolean isRocky;
+    private boolean isWater;
+    private boolean isPortal;
+    private boolean isGrass;
+
+    public void setWeight(int weight){
+        this.weight = weight;
+    }
+
+    public double getWeight(){
+        return this.weight;
+    }
 
     public AlgoNodeModel(int xPos, int yPos){
         this.algoPositionModel = new AlgoPositionModel(xPos, yPos);
     }
 
-    public double getCostSoFar(){
-        return this.costSoFar;
+    public double getGCost(){
+        return this.gCost;
     }
 
-    public void setCostSoFar(double costSoFar){
-        this.costSoFar = costSoFar;
+    public void setGCost(double gCost){
+        this.gCost = gCost;
     }
 
-    public void setVisitNumber(int visitNumber){
-        this.visitNumber = visitNumber;
-    }
-
-    public int getVisitNumber(){
-        return this.visitNumber;
-    }
+    public double getFCost() {return  this.fCost;}
+    public void setFCost(double hCost){ this.fCost = hCost;}
 
     public AlgoPositionModel position(){
         return this.algoPositionModel;
@@ -68,7 +76,6 @@ public class AlgoNodeModel extends AlgoObservable{
     /**
      * Checks whether or not this node is on the shortest path or not
      * @return True if on shortest path, false otherwise
-     * TODO: Figure out if this really needs to be here, feels like too much coupling to the algorithms class
      */
     public boolean onShortestPath(){
         return this.onShortestPath;
@@ -99,20 +106,20 @@ public class AlgoNodeModel extends AlgoObservable{
     }
 
     /**
-     * Sets this node to be an obstruction node or not an obstruction node
-     * @param obstruction True if this node should be an ostruction node, false otherwise
+     * Sets this node to be an wall node or not an wall node
+     * @param wall True if this node should be an ostruction node, false otherwise
      */
-    public void setObstruction(boolean obstruction){
-        this.isObstruction = obstruction;
+    public void setWall(boolean wall){
+        this.isWall = wall;
         this.updateObservers();
     }
 
     /**
-     * Checks whether or not this node is an obstruction node or not
-     * @return True if this is an obstruction node, false otherwise
+     * Checks whether or not this node is an wall node or not
+     * @return True if this is an wall node, false otherwise
      */
-    public boolean isObstruction(){
-        return this.isObstruction;
+    public boolean isWall(){
+        return this.isWall;
     }
 
     /**
@@ -205,5 +212,45 @@ public class AlgoNodeModel extends AlgoObservable{
 
     public boolean isBoundaryNode() {
         return this.isBoundaryNode;
+    }
+
+    public void setRocky(boolean isRocky) {
+        this.isRocky = isRocky;
+        this.weight = 2 * SIZE;
+        this.updateObservers();
+    }
+
+    public boolean isRocky(){
+        return this.isRocky;
+    }
+
+    public void setWater(boolean isWater) {
+        this.isWater = isWater;
+        this.weight = 2.5 * SIZE;
+        this.updateObservers();
+    }
+
+    public boolean isWater(){
+        return this.isWater;
+    }
+
+    public void setPortal(boolean isPortal) {
+        this.isPortal = isPortal;
+        this.weight = 0.5 * SIZE;
+//        this.updateObservers();
+    }
+
+    public boolean isPortal(){
+        return this.isPortal;
+    }
+
+    public void setGrass(boolean isGrass) {
+        this.isGrass = isGrass;
+        this.weight = 1.5 * SIZE;
+        this.updateObservers();
+    }
+
+    public boolean isGrass(){
+        return this.isGrass;
     }
 }

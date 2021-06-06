@@ -8,7 +8,7 @@ public class SidePanel extends JPanel {
     public SidePanel(List<JComponent> components){
         super();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(Color.darkGray); // Color(40, 40, 40));
         this.setBorder(BorderFactory.createEmptyBorder(UICommon.H_SEPARATOR, UICommon.H_SEPARATOR, UICommon.H_SEPARATOR, UICommon.H_SEPARATOR));
 
         for(JComponent component : components){

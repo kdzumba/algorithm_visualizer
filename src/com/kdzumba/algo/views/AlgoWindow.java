@@ -19,12 +19,16 @@ public class AlgoWindow extends JFrame {
 
         AlgoBoard algoBoard = new AlgoBoard(xDimension, yDimension);
         AlgoControlsMenu menu = new AlgoControlsMenu(algoBoard);
+        AlgoTerrainPicker nodePicker = new AlgoTerrainPicker(algoBoard);
+        nodePicker.setAlignmentX(Component.LEFT_ALIGNMENT);
         AlgoMetrics metrics = new AlgoMetrics(algoBoard.getGraph());
 
         List<JComponent> sidePanelComponents = new ArrayList<>();
         sidePanelComponents.add(menu);
+        sidePanelComponents.add(nodePicker);
         sidePanelComponents.add(metrics);
         SidePanel sidePanel = new SidePanel(sidePanelComponents);
+        sidePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 
         this.add(algoBoard, BorderLayout.CENTER);
         this.add(sidePanel, BorderLayout.LINE_START);
