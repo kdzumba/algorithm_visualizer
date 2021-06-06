@@ -8,4 +8,4 @@ This is a desktop application for visualizing different path finding and search 
 
 ## Project Demos (Updated as project progresses)
 1.
-![Demo Image 1](https://github.com/kdzumba/algorithm_visualizer/blob/main/images/algo_demo_6.PNG)
+![Demo Image 1](https://github.com/kdzumba/algorithm_visualizer/blob/main/images/algo_demo_8.PNG)
