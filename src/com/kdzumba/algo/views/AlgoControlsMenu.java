@@ -4,7 +4,6 @@ import com.kdzumba.algo.Algorithms;
 import com.kdzumba.algo.models.AlgoNodeModel;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -14,23 +13,27 @@ import java.util.Stack;
 public class AlgoControlsMenu extends JPanel {
     enum  CollectionType{
         STACK,
-        QUEUE
+        QUEUE,
+        GRAPH,
     }
 
     enum Algorithm{
         BFS,
         DIJKSTRA,
         ASTAR,
+        DFS,
+        RANDOMIZED_DFS,
     }
 
     private int animationDuration = AlgoSlider.DEFAULT_DELAY; //in milliseconds
-    private String algorithms[] = {"BFS", "Dijkstra", "A*"};
+    private String algorithms[] = {"BFS", "DFS","Randomized DFS", "Dijkstra", "A*"};
     private Algorithm selectedAlgorithm;
     private final AlgoButton clearBoardButton;
     private final AlgoButton clearPathButton;
     private final AlgoButton clearVisitedButton;
     private final AlgoButton clearObstructionsButton;
     private final AlgoButton visualizeButton;
+    private final AlgoButton generateMazeButton;
     private final AlgoComboBox algorithmsSelect;
     private final AlgoSlider animationController;
 
@@ -44,6 +47,9 @@ public class AlgoControlsMenu extends JPanel {
             algoBoard.getGraph().clearVisitedNodes();
             algoBoard.getGraph().clearObstructions();
             algoBoard.getGraph().clearShortestPath();
+            algoBoard.getGraph().clearWater();
+            algoBoard.getGraph().clearGrass();
+            algoBoard.getGraph().clearRocks();
             algoBoard.getGraph().updateNodeObservers();
         });
 
@@ -75,6 +81,14 @@ public class AlgoControlsMenu extends JPanel {
             this.doAnimate(algoBoard);
         });
 
+        generateMazeButton = new AlgoButton("Generate Maze");
+        generateMazeButton.addActionListener(e -> {
+            algoBoard.getGraph().clearShortestPath();
+            algoBoard.getGraph().clearVisitedNodes();
+            algoBoard.getGraph().updateNodeObservers();
+            this.doAnimate(algoBoard);
+        });
+
         algorithmsSelect = new AlgoComboBox(this.algorithms);
         algorithmsSelect.addActionListener(e -> {
             AlgoComboBox comboBox = (AlgoComboBox) e.getSource();
@@ -82,11 +96,17 @@ public class AlgoControlsMenu extends JPanel {
             if(selectedAlgo == "BFS"){
                 this.selectedAlgorithm = Algorithm.BFS;
             }
+            else if(selectedAlgo == "DFS"){
+                this.selectedAlgorithm = Algorithm.DFS;
+            }
             else if(selectedAlgo == "Dijkstra"){
                 this.selectedAlgorithm = Algorithm.DIJKSTRA;
             }
             else if(selectedAlgo == "A*"){
                 this.selectedAlgorithm = Algorithm.ASTAR;
+            }
+            else if(selectedAlgo == "Randomized DFS"){
+                this.selectedAlgorithm = Algorithm.RANDOMIZED_DFS;
             }
         });
         algorithmsSelect.setSelectedItem("BFS");
@@ -102,6 +122,7 @@ public class AlgoControlsMenu extends JPanel {
         this.add(clearPathButton);
         this.add(clearVisitedButton);
         this.add(clearObstructionsButton);
+        this.add(generateMazeButton);
         this.add(animationController);
     }
 
@@ -123,6 +144,8 @@ public class AlgoControlsMenu extends JPanel {
                     current = ((Stack<AlgoNodeModel>) collection).pop();
                     current.updateObservers();
                     break;
+                case GRAPH:
+
             }
             try{
                 Thread.sleep(animationDuration);
@@ -158,6 +181,11 @@ public class AlgoControlsMenu extends JPanel {
                 case ASTAR:
                     visitedNodes = Algorithms.aStar(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
                     break;
+                case DFS:
+                    visitedNodes = Algorithms.depthFirstSearch(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
+                    break;
+                case RANDOMIZED_DFS:
+                    visitedNodes = Algorithms.randomizedDepthFirstSearch(board.getGraph().getStartNode(), board.getGraph().getDestinationNode(), board.getGraph());
             }
 
             this.animate(visitedNodes, CollectionType.QUEUE);

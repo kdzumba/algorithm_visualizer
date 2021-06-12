@@ -6,7 +6,7 @@ import java.util.Hashtable;
 
 public class AlgoSlider extends JSlider {
     static final public int MIN_DELAY = 1;
-    static final public int MAX_DELAY = 300;
+    static final public int MAX_DELAY = 1000;
     static final public int DEFAULT_DELAY = 50;
 
     public AlgoSlider(int orientation){

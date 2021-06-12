@@ -8,6 +8,8 @@ import java.util.*;
 
 public class Algorithms {
     public static double runningTime;
+    public static double currentPathLength;
+    private static double timeScaler = 1000000.0;
     /**
      * Performs a breadth first search operation on a given graph model to find the shortest path
      * between the source node and the destination node
@@ -20,21 +22,22 @@ public class Algorithms {
 
         long startTime = System.nanoTime();
 
-        Queue<AlgoNodeModel> frontier = new LinkedList<>();
-        frontier.add(src);
-        Queue<AlgoNodeModel> visited = new LinkedList<>();
-        visited.add(src);
+        Queue<AlgoNodeModel> toBeProcessed = new LinkedList<>();
+        toBeProcessed.add(src);
+        Queue<AlgoNodeModel> processed = new LinkedList<>();
 
-        while(!frontier.isEmpty()){
-            AlgoNodeModel current = frontier.remove();
+        while(!toBeProcessed.isEmpty()){
+            AlgoNodeModel current = toBeProcessed.remove();
+            current.setIsProcessed(true);
+            processed.add(current);
 
             current.getNeighbours().forEach(next -> {
-                if(!next.isWall() && !visited.contains(next)){
+                if(!next.isWall() && !processed.contains(next)){
                     next.setGCost(current.getGCost() + next.getWeight());
-                    next.setIsVisited(true);
+                    next.setIsProcessed(true);
                     next.setParent(current);
-                    visited.add(next);
-                    frontier.add(next);
+                    processed.add(next);
+                    toBeProcessed.add(next);
                 }
             });
 
@@ -45,17 +48,90 @@ public class Algorithms {
         }
 
         long endTime = System.nanoTime();
-        runningTime = (endTime - startTime) / 1000000.0;
+        runningTime = (endTime - startTime) / timeScaler;
 
-        return visited;
+        return processed;
+    }
+
+    public static Queue<AlgoNodeModel> depthFirstSearch(AlgoNodeModel src, AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
+        long startTime = System.nanoTime();
+
+        Stack<AlgoNodeModel> toBeProcessed = new Stack<>();
+        Queue<AlgoNodeModel> processed = new LinkedList<>();
+
+        src.setGCost(0);
+        toBeProcessed.push(src);
+        while(!toBeProcessed.isEmpty()){
+            AlgoNodeModel current = toBeProcessed.pop();
+            processed.add(current);
+            current.setIsProcessed(true);
+
+            for(AlgoNodeModel neighbour : current.getNeighbours()){
+                if(!neighbour.isWall() && !neighbour.isProcessed()) {
+                    neighbour.setGCost(current.getGCost() + neighbour.getWeight());
+                    toBeProcessed.push(neighbour);
+                    neighbour.setParent(current);
+                }
+            }
+
+            if(current == dest){
+                break;
+            }
+        }
+
+        long endTime = System.nanoTime();
+        runningTime = (endTime - startTime) / timeScaler;
+
+        return processed;
+    }
+
+    public static Queue<AlgoNodeModel>  randomizedDepthFirstSearch(AlgoNodeModel src, AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
+        long startTime = System.nanoTime();
+
+        Stack<AlgoNodeModel> toBeProcessed = new Stack<>();
+        Queue<AlgoNodeModel> processed = new LinkedList<>();
+
+        src.setGCost(0);
+        toBeProcessed.push(src);
+        while(!toBeProcessed.isEmpty()){
+            AlgoNodeModel current = toBeProcessed.pop();
+            processed.add(current);
+            current.setIsProcessed(true);
+
+            Random rand = new Random();
+            int selectedIndex = rand.nextInt(current.getNeighbours().size());
+
+            for(AlgoNodeModel neighbour : current.getNeighbours()){
+                if(!neighbour.isWall() && !neighbour.isProcessed() && neighbour != current.getNeighbours().get(selectedIndex)) {
+                    neighbour.setGCost(current.getGCost() + neighbour.getWeight());
+                    toBeProcessed.push(neighbour);
+                    neighbour.setParent(current);
+                }
+            }
+
+            AlgoNodeModel next = current.getNeighbours().get(selectedIndex);
+            if(!next.isWall() && !next.isProcessed()){
+                next.setGCost(current.getGCost() + next.getWeight());
+                toBeProcessed.push(next);
+                next.setParent(current);
+            }
+
+            if(current == dest){
+                break;
+            }
+        }
+
+        long endTime = System.nanoTime();
+        runningTime = (endTime - startTime) / timeScaler;
+
+        return processed;
     }
 
     public static Queue<AlgoNodeModel> dijkstra(AlgoNodeModel src, AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
-
         long startTime = System.nanoTime();
 
-        Queue<AlgoNodeModel> visited = new LinkedList<>();
-        Queue<AlgoNodeModel> frontier = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getGCost));
+        Queue<AlgoNodeModel> processed = new LinkedList<>();
+        Queue<AlgoNodeModel> toBeProcessed = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getGCost));
 
         for(AlgoNodeModel nodeModel : algoGraphModel.getNodeList()){
             if(!nodeModel.isStart()) {
@@ -64,14 +140,14 @@ public class Algorithms {
         }
 
         src.setGCost(0);
-        frontier.add(src);
+        toBeProcessed.add(src);
 
-        while(!frontier.isEmpty()){
-            AlgoNodeModel current = frontier.remove();
+        while(!toBeProcessed.isEmpty()){
+            AlgoNodeModel current = toBeProcessed.remove();
 
-            if(!visited.contains(current)) {
-                visited.add(current);
-                current.setIsVisited(true);
+            if(!processed.contains(current)) {
+                processed.add(current);
+                current.setIsProcessed(true);
             }
 
             for(AlgoNodeModel neighbour : current.getNeighbours()){
@@ -79,8 +155,9 @@ public class Algorithms {
                 if(!neighbour.isWall() && neighbour.getGCost() > costSoFar){
                     neighbour.setGCost(costSoFar);
                     neighbour.setParent(current);
-                    if(!frontier.contains(neighbour)){
-                        frontier.add(neighbour);
+                    if(!toBeProcessed.contains(neighbour)){
+                        toBeProcessed.add(neighbour);
+                        neighbour.setIsToBeProcessed(true);
                     }
                 }
             }
@@ -91,16 +168,16 @@ public class Algorithms {
         }
 
         long endTime = System.nanoTime();
-        runningTime = (endTime - startTime) / 1000000.0;
+        runningTime = (endTime - startTime) / timeScaler;
 
-        return visited;
+        return processed;
     }
 
     public static Queue<AlgoNodeModel> aStar(AlgoNodeModel src, AlgoNodeModel dest, AlgoGraphModel algoGraphModel){
         long startTime = System.nanoTime();
 
-        Queue<AlgoNodeModel> visited = new LinkedList<>();
-        Queue<AlgoNodeModel> openSet = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getFCost));
+        Queue<AlgoNodeModel> processed = new LinkedList<>();
+        Queue<AlgoNodeModel> toBeProcessed = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getFCost));
 
         for(AlgoNodeModel nodeModel : algoGraphModel.getNodeList()){
             if(!nodeModel.isStart()) {
@@ -110,14 +187,14 @@ public class Algorithms {
         }
         src.setFCost(0);
         src.setGCost(0);
-        openSet.add(src);
+        toBeProcessed.add(src);
 
-        while(!openSet.isEmpty()){
-            AlgoNodeModel current = openSet.remove();
+        while(!toBeProcessed.isEmpty()){
+            AlgoNodeModel current = toBeProcessed.remove();
 
-            if(!visited.contains(current)) {
-                visited.add(current);
-                current.setIsVisited(true);
+            if(!processed.contains(current)) {
+                processed.add(current);
+                current.setIsProcessed(true);
             }
 
             for(AlgoNodeModel neighbour : current.getNeighbours()){
@@ -126,7 +203,7 @@ public class Algorithms {
                     neighbour.setGCost(costSoFar);
                     neighbour.setFCost(costSoFar + manhattanDistance(current, dest));
                     neighbour.setParent(current);
-                    openSet.add(neighbour);
+                    toBeProcessed.add(neighbour);
                 }
             }
 
@@ -136,9 +213,9 @@ public class Algorithms {
         }
 
         long endTime = System.nanoTime();
-        runningTime = (endTime - startTime) / 1000000.0;
+        runningTime = (endTime - startTime) / timeScaler;
 
-        return visited;
+        return processed;
     }
 
     public static double manhattanDistance(AlgoNodeModel node1, AlgoNodeModel node2){
@@ -161,8 +238,11 @@ public class Algorithms {
      */
     public static Stack<AlgoNodeModel> shortestPath(final AlgoNodeModel dest){
         Stack<AlgoNodeModel> path = new Stack<>();
+        currentPathLength = 0;
         AlgoNodeModel current = dest;
+
         while(current.getParent() != null){
+            currentPathLength += current.getWeight();
             current.setOnShortestPath(true);
             path.add(current);
             current = current.getParent();

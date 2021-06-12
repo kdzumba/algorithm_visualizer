@@ -24,6 +24,7 @@ public class AlgoNodeModel extends AlgoObservable{
     private boolean isWater;
     private boolean isPortal;
     private boolean isGrass;
+    private boolean isToBeProcessed;
 
     public void setWeight(int weight){
         this.weight = weight;
@@ -93,7 +94,7 @@ public class AlgoNodeModel extends AlgoObservable{
      * Sets this node to be either in a visited state or unvisited state
      * @param visited True if this node should be in visited state, false otherwise
      */
-    public void setIsVisited(boolean visited){
+    public void setIsProcessed(boolean visited){
         this.isVisited = visited;
     }
 
@@ -101,7 +102,7 @@ public class AlgoNodeModel extends AlgoObservable{
      * Checks whether or not this node has been visited or not
      * @return True if visited, false otherwise
      */
-    public boolean isVisited(){
+    public boolean isProcessed(){
         return this.isVisited;
     }
 
@@ -237,7 +238,7 @@ public class AlgoNodeModel extends AlgoObservable{
     public void setPortal(boolean isPortal) {
         this.isPortal = isPortal;
         this.weight = 0.5 * SIZE;
-//        this.updateObservers();
+        this.updateObservers();
     }
 
     public boolean isPortal(){
@@ -252,5 +253,13 @@ public class AlgoNodeModel extends AlgoObservable{
 
     public boolean isGrass(){
         return this.isGrass;
+    }
+
+    public boolean isToBeProcessed(){
+        return this.isToBeProcessed;
+    }
+
+    public void setIsToBeProcessed(boolean isToBeProcessed){
+        this.isToBeProcessed = isToBeProcessed;
     }
 }

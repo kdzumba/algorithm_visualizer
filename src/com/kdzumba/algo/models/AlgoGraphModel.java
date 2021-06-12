@@ -51,10 +51,6 @@ public class AlgoGraphModel extends AlgoObservable{
         for(int i = 0; i < xDimension; i++){
             for(int j = 0; j < yDimension; j++){
                 AlgoNodeModel node = new AlgoNodeModel(j * AlgoNodeModel.SIZE, i * AlgoNodeModel.SIZE);
-
-                if(i == j){
-                    node.setWeight(10);
-                }
                 if(this.startNode == null && i == src.getX() && j == src.getY()){
                     node.setIsStart(true);
                     this.startNode = node;
@@ -64,11 +60,6 @@ public class AlgoGraphModel extends AlgoObservable{
                     this.destinationNode = node;
                 }
 
-//                Uncomment for border of obstructions around the grid
-//                if(i == xDimension - 1 || i == 0 || j == yDimension - 1 || j == 0){
-//                    node.setBoundaryNode(true);
-//                    node.setObstruction(true);
-//                }
                 this.addNode(node);
             }
         }
@@ -129,7 +120,7 @@ public class AlgoGraphModel extends AlgoObservable{
 
     public void clearVisitedNodes(){
         for(AlgoNodeModel nodeModel : this.nodeList){
-            nodeModel.setIsVisited(false);
+            nodeModel.setIsProcessed(false);
         }
     }
 
@@ -236,7 +227,7 @@ public class AlgoGraphModel extends AlgoObservable{
     public int getVisitedNodesCount() {
         int count = 0;
         for(AlgoNodeModel nodeModel : this.nodeList){
-            if(nodeModel.isVisited()){
+            if(nodeModel.isProcessed()){
                 count ++;
             }
         }
@@ -262,5 +253,23 @@ public class AlgoGraphModel extends AlgoObservable{
             }
         }
         return cost;
+    }
+
+    public void clearWater() {
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.setWater(false);
+        }
+    }
+
+    public void clearRocks(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.setRocky(false);
+        }
+    }
+
+    public void clearGrass(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.setGrass(false);
+        }
     }
 }

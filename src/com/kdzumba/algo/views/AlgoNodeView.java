@@ -13,6 +13,7 @@ import java.awt.event.MouseMotionAdapter;
  */
 public class AlgoNodeView extends JButton implements AlgoObserver {
     private final AlgoNodeModel algoNodeModel;
+    private int blockOffset = 0;
 
     @Override
     public void update() {
@@ -20,7 +21,6 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
     }
 
     private enum NodeColor {
-        VISITED(UICommon.PROCESSED_COLOR),
         PORTAL(Color.BLUE),
         DEFAULT(Color.white)
         ;
@@ -59,6 +59,9 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
                 parent.dispatchEvent(e);
             }
         });
+        this.setOpaque(false);
+        this.setContentAreaFilled(false);
+//        this.setBorderPainted(false);
         this.setBackground(NodeColor.DEFAULT.color);
     }
 
@@ -77,7 +80,15 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         return new Dimension(AlgoNodeModel.SIZE, AlgoNodeModel.SIZE);
     }
 
+    @Override
+    public void paintComponent(Graphics g){
+        g.setColor(this.getBackground());
+        g.fillRect(0, 0, this.getWidth() - blockOffset, this.getHeight() - blockOffset);
+        super.paintComponent(g);
+    }
+
     public void updateColor(){
+        this.blockOffset = 0;
         if(this.algoNodeModel.isWall()){
             this.setBackground(UICommon.WALL_COLOR);
         }
@@ -90,8 +101,12 @@ public class AlgoNodeView extends JButton implements AlgoObserver {
         else if(this.algoNodeModel.onShortestPath()){
             this.setBackground(UICommon.PATH_COLOR);
         }
-        else if(this.algoNodeModel.isVisited()){
-            this.setBackground(NodeColor.VISITED.color);
+//        else if(this.algoNodeModel.isToBeProcessed()){
+//            this.blockOffset = 3;
+//            this.setBackground(UICommon.GRASS_COLOR);
+//        }
+        else if(this.algoNodeModel.isProcessed()){
+            this.setBackground(UICommon.PROCESSED_COLOR);
         }
         else if(this.algoNodeModel.isPortal()){
             this.setBackground(NodeColor.PORTAL.color);
