@@ -72,6 +72,9 @@ public class AlgoBoard extends JPanel {
         this.updateBoard();
     }
 
+    public int getxDimension(){ return this.xDimension;}
+    public int getyDimension(){return this.yDimension;}
+
     public void setFocusedLocation(int x, int y){
         this.focusedLocation = new AlgoPositionModel(x, y);
     }

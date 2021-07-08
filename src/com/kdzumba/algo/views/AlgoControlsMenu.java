@@ -2,13 +2,11 @@ package com.kdzumba.algo.views;
 
 import com.kdzumba.algo.Algorithms;
 import com.kdzumba.algo.models.AlgoNodeModel;
+import com.kdzumba.algo.models.AlgoPositionModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class AlgoControlsMenu extends JPanel {
     enum  CollectionType{
@@ -44,13 +42,9 @@ public class AlgoControlsMenu extends JPanel {
 
         clearBoardButton = new AlgoButton("Clear Board");
         clearBoardButton.addActionListener(e -> {
-            algoBoard.getGraph().clearVisitedNodes();
-            algoBoard.getGraph().clearObstructions();
-            algoBoard.getGraph().clearShortestPath();
-            algoBoard.getGraph().clearWater();
-            algoBoard.getGraph().clearGrass();
-            algoBoard.getGraph().clearRocks();
+            algoBoard.getGraph().resetGraph();
             algoBoard.getGraph().updateNodeObservers();
+            algoBoard.getGraph().updateObservers();
         });
 
         clearPathButton = new AlgoButton("Clear Path");
@@ -83,10 +77,15 @@ public class AlgoControlsMenu extends JPanel {
 
         generateMazeButton = new AlgoButton("Generate Maze");
         generateMazeButton.addActionListener(e -> {
-            algoBoard.getGraph().clearShortestPath();
-            algoBoard.getGraph().clearVisitedNodes();
+            algoBoard.getGraph().resetGraph();
+            algoBoard.getGraph().updateObservers();
             algoBoard.getGraph().updateNodeObservers();
-            this.doAnimate(algoBoard);
+
+            int xDimension = algoBoard.getxDimension();
+            int yDimension = algoBoard.getyDimension();
+            algoBoard.getGraph().generateObstructions(xDimension, yDimension);
+            algoBoard.getGraph().updateObservers();
+            algoBoard.getGraph().updateNodeObservers();
         });
 
         algorithmsSelect = new AlgoComboBox(this.algorithms);

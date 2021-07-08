@@ -32,7 +32,7 @@ public class Algorithms {
             processed.add(current);
 
             current.getNeighbours().forEach(next -> {
-                if(!next.isWall() && !processed.contains(next)){
+                if(!next.isWall() && !next.isProcessed()){
                     next.setGCost(current.getGCost() + next.getWeight());
                     next.setIsProcessed(true);
                     next.setParent(current);
@@ -63,14 +63,16 @@ public class Algorithms {
         toBeProcessed.push(src);
         while(!toBeProcessed.isEmpty()){
             AlgoNodeModel current = toBeProcessed.pop();
-            processed.add(current);
-            current.setIsProcessed(true);
+            if(!current.isProcessed()){
+                processed.add(current);
+                current.setIsProcessed(true);
 
-            for(AlgoNodeModel neighbour : current.getNeighbours()){
-                if(!neighbour.isWall() && !neighbour.isProcessed()) {
-                    neighbour.setGCost(current.getGCost() + neighbour.getWeight());
-                    toBeProcessed.push(neighbour);
-                    neighbour.setParent(current);
+                for(AlgoNodeModel neighbour : current.getNeighbours()){
+                    if(!neighbour.isWall() && !neighbour.isProcessed()) {
+                        neighbour.setGCost(current.getGCost() + neighbour.getWeight());
+                        toBeProcessed.push(neighbour);
+                        neighbour.setParent(current);
+                    }
                 }
             }
 
@@ -144,20 +146,16 @@ public class Algorithms {
 
         while(!toBeProcessed.isEmpty()){
             AlgoNodeModel current = toBeProcessed.remove();
-
-            if(!processed.contains(current)) {
+            if(!current.isProcessed()){
                 processed.add(current);
                 current.setIsProcessed(true);
-            }
 
-            for(AlgoNodeModel neighbour : current.getNeighbours()){
-                double costSoFar = current.getGCost() + neighbour.getWeight();
-                if(!neighbour.isWall() && neighbour.getGCost() > costSoFar){
-                    neighbour.setGCost(costSoFar);
-                    neighbour.setParent(current);
-                    if(!toBeProcessed.contains(neighbour)){
+                for(AlgoNodeModel neighbour : current.getNeighbours()){
+                    double costSoFar = current.getGCost() + neighbour.getWeight();
+                    if(!neighbour.isWall() && neighbour.getGCost() > costSoFar){
+                        neighbour.setGCost(costSoFar);
+                        neighbour.setParent(current);
                         toBeProcessed.add(neighbour);
-                        neighbour.setIsToBeProcessed(true);
                     }
                 }
             }
@@ -177,12 +175,13 @@ public class Algorithms {
         long startTime = System.nanoTime();
 
         Queue<AlgoNodeModel> processed = new LinkedList<>();
-        Queue<AlgoNodeModel> toBeProcessed = new PriorityQueue<>(Comparator.comparingDouble(AlgoNodeModel::getFCost));
+        Queue<AlgoNodeModel> toBeProcessed = new PriorityQueue<>(new AlgoNodeModel.NodeComparator());
 
         for(AlgoNodeModel nodeModel : algoGraphModel.getNodeList()){
             if(!nodeModel.isStart()) {
                 nodeModel.setFCost(Double.POSITIVE_INFINITY);
                 nodeModel.setGCost(Double.POSITIVE_INFINITY);
+                nodeModel.setHCost(Double.POSITIVE_INFINITY);
             }
         }
         src.setFCost(0);
@@ -192,7 +191,7 @@ public class Algorithms {
         while(!toBeProcessed.isEmpty()){
             AlgoNodeModel current = toBeProcessed.remove();
 
-            if(!processed.contains(current)) {
+            if(!current.isProcessed()) {
                 processed.add(current);
                 current.setIsProcessed(true);
             }
@@ -201,7 +200,8 @@ public class Algorithms {
                 double costSoFar = current.getGCost() + neighbour.getWeight();
                 if(!neighbour.isWall() && costSoFar < neighbour.getGCost()){
                     neighbour.setGCost(costSoFar);
-                    neighbour.setFCost(costSoFar + manhattanDistance(current, dest));
+                    manhattanDistance(neighbour, dest);
+                    neighbour.setFCost(neighbour.getHCost() + neighbour.getGCost());
                     neighbour.setParent(current);
                     toBeProcessed.add(neighbour);
                 }
@@ -218,16 +218,9 @@ public class Algorithms {
         return processed;
     }
 
-    public static double manhattanDistance(AlgoNodeModel node1, AlgoNodeModel node2){
-        return Math.abs(node1.position().getX() - node2.position().getX()) + Math.abs(node1.position().getY() - node2.position().getY()) * (1 + 30 / 1000.0);
-    }
-
-    public static class NodeComparator implements Comparable<AlgoNodeModel>{
-
-        @Override
-        public int compareTo(@NotNull AlgoNodeModel o) {
-            return 0;
-        }
+    public static void manhattanDistance(AlgoNodeModel node1, AlgoNodeModel node2){
+        double manhattanDistance = Math.abs(node1.position().getX() - node2.position().getX()) + Math.abs(node1.position().getY() - node2.position().getY());
+        node1.setHCost(manhattanDistance);
     }
 
     /**

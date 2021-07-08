@@ -258,18 +258,33 @@ public class AlgoGraphModel extends AlgoObservable{
     public void clearWater() {
         for(AlgoNodeModel nodeModel : this.nodeList){
             nodeModel.setWater(false);
+            nodeModel.setHCost(0);
+            nodeModel.setGCost(0);
+            nodeModel.setFCost(0);
         }
     }
 
     public void clearRocks(){
         for(AlgoNodeModel nodeModel : this.nodeList){
             nodeModel.setRocky(false);
+            nodeModel.setHCost(0);
+            nodeModel.setGCost(0);
+            nodeModel.setFCost(0);
         }
     }
 
     public void clearGrass(){
         for(AlgoNodeModel nodeModel : this.nodeList){
             nodeModel.setGrass(false);
+            nodeModel.setHCost(0);
+            nodeModel.setGCost(0);
+            nodeModel.setFCost(0);
+        }
+    }
+
+    public void resetGraph(){
+        for(AlgoNodeModel nodeModel : this.nodeList){
+            nodeModel.reset();
         }
     }
 }

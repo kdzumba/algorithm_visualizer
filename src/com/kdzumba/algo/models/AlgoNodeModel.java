@@ -1,5 +1,6 @@
 package com.kdzumba.algo.models;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.lang.Math;
@@ -15,6 +16,7 @@ public class AlgoNodeModel extends AlgoObservable{
     private boolean isBoundaryNode = false;
     private double gCost; //This is the distance from the start node to this node
     private double fCost;
+    private double hCost;
     private double weight = SIZE;
     private AlgoNodeModel parent;
     private AlgoPositionModel algoPositionModel;
@@ -26,16 +28,44 @@ public class AlgoNodeModel extends AlgoObservable{
     private boolean isGrass;
     private boolean isToBeProcessed;
 
+    public static class NodeComparator implements Comparator<AlgoNodeModel>{
+
+        @Override
+        public int compare(AlgoNodeModel o1, AlgoNodeModel o2) {
+            if (o1.getFCost() == o2.getFCost()) {
+                return Double.compare(o1.getHCost(), o2.getHCost());
+            }
+            return Double.compare(o1.getFCost(), o2.getFCost());
+        }
+    }
+
+    public AlgoNodeModel(int xPos, int yPos){
+        this.algoPositionModel = new AlgoPositionModel(xPos, yPos);
+    }
+
+    public void reset(){
+        this.gCost = 0;
+        this.fCost = 0;
+        this.hCost = 0;
+        this.weight = SIZE;
+        this.parent = null;
+        this.isWall = false;
+        this.isVisited = false;
+        this.isBoundaryNode = false;
+        this.onShortestPath = false;
+        this.isRocky = false;
+        this.isWater = false;
+        this.isPortal = false;
+        this.isGrass = false;
+        this.isToBeProcessed = false;
+    }
+
     public void setWeight(int weight){
         this.weight = weight;
     }
 
     public double getWeight(){
         return this.weight;
-    }
-
-    public AlgoNodeModel(int xPos, int yPos){
-        this.algoPositionModel = new AlgoPositionModel(xPos, yPos);
     }
 
     public double getGCost(){
@@ -48,6 +78,9 @@ public class AlgoNodeModel extends AlgoObservable{
 
     public double getFCost() {return  this.fCost;}
     public void setFCost(double hCost){ this.fCost = hCost;}
+
+    public double getHCost(){return this.hCost;}
+    public void setHCost(double hcost){ this.hCost = hcost;}
 
     public AlgoPositionModel position(){
         return this.algoPositionModel;
